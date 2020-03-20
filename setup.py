@@ -68,8 +68,8 @@ setup(
     description="AICSImageIO bindings for napari",
     entry_points={
         "napari.plugin": [
-            "aicsimageio = aicsimageio.plugins.napari.in_memory",
-            "aicsimageio_delayed = aicsimageio.plugins.napari.delayed",
+            "aicsimageio = napari_aicsimageio.in_memory",
+            "aicsimageio_delayed = napari_aicsimageio.delayed",
         ],
     },
     install_requires=requirements,
