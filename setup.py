@@ -38,7 +38,7 @@ dev_requirements = [
 ]
 
 requirements = [
-    "aicsimageio>=3.1.3",
+    "aicsimageio>=3.1.4",
 ]
 
 extra_requirements = {
