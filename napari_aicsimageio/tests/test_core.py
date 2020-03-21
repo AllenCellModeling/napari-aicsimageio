@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import pytest
-
 import dask.array as da
 import numpy as np
+import pytest
+
 from napari_aicsimageio import core
 
 # Example files
@@ -21,8 +21,8 @@ BIG_CZI_FILE = "s_3_t_1_c_3_z_5.czi"
 @pytest.mark.parametrize(
     "filename, compute, expected_dtype, expected_shape, expected_channel_axis",
     [
-        (PNG_FILE, True, np.ndarray, (1, 1, 1), None),
-        (GIF_FILE, True, np.ndarray, (1, 1, 1), None),
+        (PNG_FILE, True, np.ndarray, (1, 800, 537, 4), None),
+        (GIF_FILE, True, np.ndarray, (1, 72, 268, 268, 4), None),
         (CZI_FILE, True, np.ndarray, (1, 325, 475), None),
         (CZI_FILE, False, da.core.Array, (1, 325, 475), None),
         (OME_FILE, True, np.ndarray, (1, 325, 475), None),
