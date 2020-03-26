@@ -1,7 +1,7 @@
 # napari-aicsimageio
 
-[![Build Status](https://github.com/AllenCellModeling/napari_aicsimageio/workflows/Build%20Master/badge.svg)](https://github.com/AllenCellModeling/napari_aicsimageio/actions)
-[![Code Coverage](https://codecov.io/gh/AllenCellModeling/napari_aicsimageio/branch/master/graph/badge.svg)](https://codecov.io/gh/AllenCellModeling/napari_aicsimageio)
+[![Build Status](https://github.com/AllenCellModeling/napari-aicsimageio/workflows/Build%20Master/badge.svg)](https://github.com/AllenCellModeling/napari-aicsimageio/actions)
+[![Code Coverage](https://codecov.io/gh/AllenCellModeling/napari-aicsimageio/branch/master/graph/badge.svg)](https://codecov.io/gh/AllenCellModeling/napari-aicsimageio)
 
 AICSImageIO bindings for napari
 
@@ -19,7 +19,7 @@ AICSImageIO bindings for napari
 
 ## Installation
 **Stable Release:** `pip install napari-aicsimageio`<br>
-**Development Head:** `pip install git+https://github.com/AllenCellModeling/napari_aicsimageio.git`
+**Development Head:** `pip install git+https://github.com/AllenCellModeling/napari-aicsimageio.git`
 
 ## Development
 See [CONTRIBUTING.md](CONTRIBUTING.md) for information related to developing the code.
