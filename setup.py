@@ -22,41 +22,34 @@ setup_requirements = [
 ]
 
 dev_requirements = [
+    "black>=19.10b0",
     "bumpversion>=0.5.3",
     "coverage>=5.0a4",
     "flake8>=3.7.7",
     "ipython>=7.5.0",
-    "m2r>=0.2.1",
+    "napari>=0.2.12",
     "pytest>=4.3.0",
     "pytest-cov==2.6.1",
     "pytest-raises>=0.10",
     "pytest-runner>=4.4",
-    "Sphinx>=2.0.0b1",
-    "sphinx_rtd_theme>=0.1.2",
     "tox>=3.5.2",
     "twine>=1.13.0",
     "wheel>=0.33.1",
 ]
 
-interactive_requirements = [
-    "altair",
-    "jupyterlab",
-    "matplotlib",
+requirements = [
+    "aicsimageio>=3.1.4",
 ]
-
-requirements = []
 
 extra_requirements = {
     "test": test_requirements,
     "setup": setup_requirements,
     "dev": dev_requirements,
-    "interactive": interactive_requirements,
     "all": [
         *requirements,
         *test_requirements,
         *setup_requirements,
         *dev_requirements,
-        *interactive_requirements
     ]
 }
 
@@ -74,16 +67,17 @@ setup(
     ],
     description="AICSImageIO bindings for napari",
     entry_points={
-        "console_scripts": [
-            "my_example=napari_aicsimageio.bin.my_example:main"
+        "napari.plugin": [
+            "aicsimageio = napari_aicsimageio.in_memory",
+            "aicsimageio_delayed = napari_aicsimageio.delayed",
         ],
     },
     install_requires=requirements,
-    license="MIT license",
+    license="BSD-3-Clause",
     long_description=readme,
     long_description_content_type="text/markdown",
     include_package_data=True,
-    keywords="napari, aicsimageio",
+    keywords="napari, aicsimageio, imaging",
     name="napari-aicsimageio",
     packages=find_packages(exclude=["tests", "*.tests", "*.tests.*"]),
     python_requires=">=3.6",
