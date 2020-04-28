@@ -6,18 +6,16 @@ from typing import Any, Callable, Dict, List, NamedTuple, Optional, Tuple, Union
 
 import dask.array as da
 import numpy as np
+
 from aicsimageio import AICSImage, dask_utils, exceptions
 from aicsimageio.constants import Dimensions
 from aicsimageio.readers.reader import Reader
-from pluggy import HookimplMarker
 
 ###############################################################################
 
 LayerData = Union[Tuple[Any], Tuple[Any, Dict], Tuple[Any, Dict, str]]
 PathLike = Union[str, List[str]]
 ReaderFunction = Callable[[PathLike], List[LayerData]]
-
-napari_hook_implementation = HookimplMarker("napari")
 
 ###############################################################################
 
