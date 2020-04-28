@@ -39,6 +39,8 @@ dev_requirements = [
 
 requirements = [
     "aicsimageio>=3.1.4",
+    #"napari>=0.3.0",
+    "napari_plugin_engine>=0.1.4",
 ]
 
 extra_requirements = {
