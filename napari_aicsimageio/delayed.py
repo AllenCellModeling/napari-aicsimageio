@@ -3,13 +3,9 @@
 
 from typing import Optional
 
-from pluggy import HookimplMarker
+from napari_plugin_engine import napari_hook_implementation
 
 from . import core
-
-###############################################################################
-
-napari_hook_implementation = HookimplMarker("napari")
 
 ###############################################################################
 

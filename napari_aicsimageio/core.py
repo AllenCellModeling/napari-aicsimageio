@@ -4,10 +4,9 @@
 from functools import partial
 from typing import Any, Callable, Dict, List, NamedTuple, Optional, Tuple, Union
 
-from pluggy import HookimplMarker
-
 import dask.array as da
 import numpy as np
+
 from aicsimageio import AICSImage, dask_utils, exceptions
 from aicsimageio.constants import Dimensions
 from aicsimageio.readers.reader import Reader
@@ -17,8 +16,6 @@ from aicsimageio.readers.reader import Reader
 LayerData = Union[Tuple[Any], Tuple[Any, Dict], Tuple[Any, Dict, str]]
 PathLike = Union[str, List[str]]
 ReaderFunction = Callable[[PathLike], List[LayerData]]
-
-napari_hook_implementation = HookimplMarker("napari")
 
 ###############################################################################
 
@@ -112,6 +109,14 @@ def reader_function(path: PathLike, compute: bool, processes: bool) -> List[Laye
         # as there is an assumption it is all the same
         channel_names = results[0].channel_names
 
+        # Construct visible array if channel names are present
+        if channel_names is not None:
+            # Only display first channel
+            visible = [True if i == 0 else False for i, c in enumerate(channel_names)]
+        else:
+            # No channels, always display
+            visible = True
+
         # Add 1 to offset the new axis from the array stack
         channel_axis = results[0].channel_axis
         if channel_axis is not None:
@@ -120,8 +125,7 @@ def reader_function(path: PathLike, compute: bool, processes: bool) -> List[Laye
         meta = {
             "name": channel_names,
             "channel_axis": channel_axis,
-            "is_pyramid": False,
-            "visible": False,
+            "visible": visible,
         }
 
     return [(data, meta)]
