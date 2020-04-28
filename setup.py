@@ -39,7 +39,9 @@ dev_requirements = [
 
 requirements = [
     "aicsimageio>=3.1.4",
-    #"napari>=0.3.0",
+    # napari plugins is the `napari>=0.3.0` release
+    # If someone is trying to use plugins they should have everything they need
+    # for this package to work
     "napari_plugin_engine>=0.1.4",
 ]
 
