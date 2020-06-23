@@ -17,7 +17,7 @@ test_requirements = [
     "codecov>=2.1.4",
     "flake8>=3.8.3",
     "flake8-debugger>=3.2.1",
-    "napari>=0.3.0",
+    "napari[pyqt5]>=0.3.0",
     "pytest>=5.4.3",
     "pytest-cov>=2.9.0",
     "pytest-raises>=0.11",
@@ -39,7 +39,7 @@ dev_requirements = [
 ]
 
 requirements = [
-    "aicsimageio>=3.2.0",
+    "aicsimageio>=3.2.3",
     # napari plugins is the `napari>=0.3.0` release
     # If someone is trying to use plugins they should have everything they need
     # for this package to work

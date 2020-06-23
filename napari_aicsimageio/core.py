@@ -6,7 +6,6 @@ from typing import Any, Callable, Dict, List, NamedTuple, Optional, Tuple, Union
 
 import dask.array as da
 import numpy as np
-
 from aicsimageio import AICSImage, dask_utils, exceptions
 from aicsimageio.constants import Dimensions
 from aicsimageio.readers.reader import Reader
@@ -48,8 +47,9 @@ def _load_image(
         )
 
     # Set channel_axis
-    if Dimensions.Channel in reader.dims:
-        channel_axis = reader.dims.index(Dimensions.Channel)
+    dims = [dim for dim in reader.dims if reader.size(dim)[0] > 1]
+    if Dimensions.Channel in dims:
+        channel_axis = dims.index(Dimensions.Channel)
     else:
         channel_axis = None
 
@@ -61,7 +61,7 @@ def _load_image(
 
     # Finalize data and metadata to send to napari viewer
     return LoadResult(
-        data=np.squeeze(reader.dask_data.astype(np.float16)),
+        data=np.squeeze(reader.dask_data),
         index=index,
         channel_axis=channel_axis,
         channel_names=channel_names,
@@ -100,6 +100,7 @@ def reader_function(path: PathLike, compute: bool, processes: bool) -> List[Laye
 
         # Stack all arrays and configure metadata
         data = da.stack([result.data for result in results])
+        data = da.squeeze(data)
 
         # Determine whether or not to read in full first
         if compute:
@@ -117,9 +118,9 @@ def reader_function(path: PathLike, compute: bool, processes: bool) -> List[Laye
             # No channels, always display
             visible = True
 
-        # Add 1 to offset the new axis from the array stack
+        # If multiple files were read we need to increment channel axis due to stack
         channel_axis = results[0].channel_axis
-        if channel_axis is not None:
+        if len(paths) > 1 and channel_axis is not None:
             channel_axis += 1
 
         meta = {
