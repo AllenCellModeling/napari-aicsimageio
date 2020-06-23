@@ -8,37 +8,38 @@ from setuptools import find_packages, setup
 with open("README.md") as readme_file:
     readme = readme_file.read()
 
-test_requirements = [
-    "codecov",
-    "flake8",
-    "black",
-    "pytest",
-    "pytest-cov",
-    "pytest-raises",
+setup_requirements = [
+    "pytest-runner>=5.2",
 ]
 
-setup_requirements = [
-    "pytest-runner",
+test_requirements = [
+    "black>=19.10b0",
+    "codecov>=2.1.4",
+    "flake8>=3.8.3",
+    "flake8-debugger>=3.2.1",
+    "napari>=0.3.0",
+    "pytest>=5.4.3",
+    "pytest-cov>=2.9.0",
+    "pytest-raises>=0.11",
 ]
 
 dev_requirements = [
-    "black>=19.10b0",
-    "bumpversion>=0.5.3",
-    "coverage>=5.0a4",
-    "flake8>=3.7.7",
-    "ipython>=7.5.0",
-    "napari>=0.2.12",
-    "pytest>=4.3.0",
-    "pytest-cov==2.6.1",
-    "pytest-raises>=0.10",
-    "pytest-runner>=4.4",
-    "tox>=3.5.2",
-    "twine>=1.13.0",
-    "wheel>=0.33.1",
+    *setup_requirements,
+    *test_requirements,
+    "bumpversion>=0.6.0",
+    "coverage>=5.1",
+    "ipython>=7.15.0",
+    "m2r>=0.2.1",
+    "pytest-runner>=5.2",
+    "Sphinx>=2.0.0b1,<3",
+    "sphinx_rtd_theme>=0.4.3",
+    "tox>=3.15.2",
+    "twine>=3.1.1",
+    "wheel>=0.34.2",
 ]
 
 requirements = [
-    "aicsimageio>=3.1.4",
+    "aicsimageio>=3.2.0",
     # napari plugins is the `napari>=0.3.0` release
     # If someone is trying to use plugins they should have everything they need
     # for this package to work
@@ -46,13 +47,11 @@ requirements = [
 ]
 
 extra_requirements = {
-    "test": test_requirements,
     "setup": setup_requirements,
+    "test": test_requirements,
     "dev": dev_requirements,
     "all": [
         *requirements,
-        *test_requirements,
-        *setup_requirements,
         *dev_requirements,
     ]
 }
@@ -61,9 +60,9 @@ setup(
     author="Jackson Maxfield Brown",
     author_email="jacksonb@alleninstitute.org",
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: BSD License",
         "Natural Language :: English",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
