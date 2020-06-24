@@ -118,16 +118,20 @@ def reader_function(path: PathLike, compute: bool, processes: bool) -> List[Laye
             # No channels, always display
             visible = True
 
+        # Construct basic metadata
+        meta = {
+            "name": channel_names,
+            "visible": visible,
+        }
+
         # If multiple files were read we need to increment channel axis due to stack
         channel_axis = results[0].channel_axis
         if len(paths) > 1 and channel_axis is not None:
             channel_axis += 1
 
-        meta = {
-            "name": channel_names,
-            "channel_axis": channel_axis,
-            "visible": visible,
-        }
+        # Only add channel axis if it's not None
+        if channel_axis is not None:
+            meta["channel_axis"] = channel_axis
 
     return [(data, meta)]
 
