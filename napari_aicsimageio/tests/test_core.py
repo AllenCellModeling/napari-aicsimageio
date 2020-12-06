@@ -19,7 +19,7 @@ BIG_CZI_FILE = "s_3_t_1_c_3_z_5.czi"
 
 
 @pytest.mark.parametrize(
-    "filename, compute, expected_dtype, expected_shape, expected_channel_axis",
+    "filename, in_memory, expected_dtype, expected_shape, expected_channel_axis",
     [
         (PNG_FILE, True, np.ndarray, (800, 537, 4), None),
         (GIF_FILE, True, np.ndarray, (72, 268, 268, 4), None),
@@ -37,7 +37,7 @@ BIG_CZI_FILE = "s_3_t_1_c_3_z_5.czi"
     ],
 )
 def test_reader(
-    data_dir, filename, compute, expected_dtype, expected_shape, expected_channel_axis
+    data_dir, filename, in_memory, expected_dtype, expected_shape, expected_channel_axis
 ):
     # Append filename(s) to resources dir
     if isinstance(filename, str):
@@ -46,7 +46,7 @@ def test_reader(
         path = [str(data_dir / _path) for _path in filename]
 
     # Get reader
-    reader = core.get_reader(path, compute, processes=False)
+    reader = core.get_reader(path, in_memory)
 
     # Check callable
     assert callable(reader)
@@ -55,7 +55,7 @@ def test_reader(
     layer_data = reader(path)
 
     # We only return one layer
-    data, _ = layer_data[0]
+    data, _, _ = layer_data[0]
 
     # Check layer data
     assert isinstance(data, expected_dtype)
