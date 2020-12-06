@@ -21,6 +21,7 @@ test_requirements = [
     "pytest>=5.4.3",
     "pytest-cov>=2.9.0",
     "pytest-raises>=0.11",
+    "scikit-image",
 ]
 
 dev_requirements = [
@@ -58,13 +59,17 @@ extra_requirements = {
 
 setup(
     author="Jackson Maxfield Brown",
-    author_email="jacksonb@alleninstitute.org",
+    author_email="jmaxfieldbrown@gmail.com",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
-        "Intended Audience :: Developers",
+        "Intended Audience :: Science/Research",
+        "Framework :: napari",
+        "Topic :: Scientific/Engineering",
+        "Topic :: Scientific/Engineering :: Visualization",
+        "Topic :: Scientific/Engineering :: Information Analysis",
+        "Topic :: Scientific/Engineering :: Bio-Informatics",
         "License :: OSI Approved :: BSD License",
         "Natural Language :: English",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
     ],
@@ -83,7 +88,7 @@ setup(
     keywords="napari, aicsimageio, imaging",
     name="napari-aicsimageio",
     packages=find_packages(exclude=["tests", "*.tests", "*.tests.*"]),
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     setup_requires=setup_requirements,
     test_suite="napari_aicsimageio/tests",
     tests_require=test_requirements,
