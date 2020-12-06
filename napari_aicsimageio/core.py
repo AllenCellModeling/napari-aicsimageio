@@ -36,12 +36,12 @@ def reader_function(path: PathLike, in_memory: bool) -> List[LayerData]:
 
     # Read every file or create delayed arrays
     if in_memory:
-        imgs = [reader.data for reader in readers]
-        data = np.stack(imgs).squeeze()
+        data = [reader.data for reader in readers]
+        data = np.stack(data).squeeze()
 
     else:
-        imgs = [reader.dask_data for reader in readers]
-        data = da.stack(imgs).squeeze()
+        data = [reader.dask_data for reader in readers]
+        data = da.stack(data).squeeze()
 
     # Construct empty metadata to pass through
     meta = {}
@@ -53,9 +53,6 @@ def reader_function(path: PathLike, in_memory: bool) -> List[LayerData]:
         # Get channel names for display
         channel_names = readers[0].get_channel_names()
 
-        # Only display first channel (protects against image overload)
-        visible = [True if i == 0 else False for i, _ in enumerate(channel_names)]
-
         # Fix channel axis in the case of squeezed or many image stack
         channel_axis = readers[0].dims.index(Dimensions.Channel)
         if readers[0].shape[channel_axis] > 1:
@@ -65,7 +62,6 @@ def reader_function(path: PathLike, in_memory: bool) -> List[LayerData]:
             # Construct basic metadata
             meta["name"] = channel_names
             meta["channel_axis"] = channel_axis
-            meta["visible"] = visible
 
     return [(data, meta, "image")]
 
