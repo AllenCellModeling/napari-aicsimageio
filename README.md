@@ -12,8 +12,8 @@ AICSImageIO bindings for napari
     * `CZI`
     * `OME-TIFF`
     * `TIFF`
-    * Any formats supported by [`aicsimageio`](https://github.com/AllenCellModeling/aicsimageio)
-    * Any additional format supported by [`imageio`](https://github.com/imageio/imageio)
+    * Any formats supported by [aicsimageio](https://github.com/AllenCellModeling/aicsimageio)
+    * Any additional format supported by [imageio](https://github.com/imageio/imageio)
 * Two variants of the AICSImageIO bindings:
     * `aicsimageio`, which reads the image fully into memory
     * `aicsimageio-delayed`, which delays reading YX planes until requested for large file support

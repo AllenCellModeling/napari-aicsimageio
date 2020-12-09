@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from functools import partial
-from typing import Any, Callable, Dict, List, NamedTuple, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import dask.array as da
 import numpy as np
-from aicsimageio import AICSImage, dask_utils, exceptions
+from aicsimageio import AICSImage, exceptions
 from aicsimageio.constants import Dimensions
-from aicsimageio.readers.reader import Reader
 
 ###############################################################################
 
@@ -19,61 +18,12 @@ ReaderFunction = Callable[[PathLike], List[LayerData]]
 ###############################################################################
 
 
-class LoadResult(NamedTuple):
-    data: np.ndarray
-    index: int
-    channel_axis: Optional[int]
-    channel_names: Optional[List[str]]
-
-
-###############################################################################
-
-
-def _load_image(
-    path: str, ReaderClass: Reader, index: int, compute: bool
-) -> LoadResult:
-    # napari global viewer state can't be adjusted in a plugin and thus `ndisplay`
-    # will default be set to two (2). Because of this, set the chunk dims to be
-    # simply YX planes in the case where we are delayed loading to ensure we aren't
-    # requesting more data than necessary.
-
-    # Initialize reader
-    # If in memory, no need to change the default chunk_by_dims
-    if compute:
-        reader = ReaderClass(path)
-    else:
-        reader = ReaderClass(
-            path, chunk_by_dims=[Dimensions.SpatialY, Dimensions.SpatialX]
-        )
-
-    # Set channel_axis
-    dims = [dim for dim in reader.dims if reader.size(dim)[0] > 1]
-    if Dimensions.Channel in dims:
-        channel_axis = dims.index(Dimensions.Channel)
-    else:
-        channel_axis = None
-
-    # Set channel names
-    if channel_axis is not None:
-        channel_names = reader.get_channel_names()
-    else:
-        channel_names = None
-
-    # Finalize data and metadata to send to napari viewer
-    return LoadResult(
-        data=np.squeeze(reader.dask_data),
-        index=index,
-        channel_axis=channel_axis,
-        channel_names=channel_names,
-    )
-
-
-def reader_function(path: PathLike, compute: bool, processes: bool) -> List[LayerData]:
+def reader_function(path: PathLike, in_memory: bool) -> List[LayerData]:
     """
     Given a single path return a list of LayerData tuples.
     """
     # Alert console of how we are loading the image
-    print(f"Reader will load image in-memory: {compute}")
+    print(f"Reader will load image in-memory: {in_memory}")
 
     # Standardize path to list of paths
     paths = [path] if isinstance(path, str) else path
@@ -81,64 +31,40 @@ def reader_function(path: PathLike, compute: bool, processes: bool) -> List[Laye
     # Determine reader for all
     ReaderClass = AICSImage.determine_reader(paths[0])
 
-    # Spawn dask cluster for parallel read
-    with dask_utils.cluster_and_client(processes=processes) as (cluster, client):
-        # Map each file read
-        futures = client.map(
-            _load_image,
-            paths,
-            [ReaderClass for i in range(len(paths))],
-            [i for i in range(len(paths))],
-            [compute for compute in range(len(paths))],
-        )
+    # Create readers for each path
+    readers = [ReaderClass(path) for path in paths]
 
-        # Block until done
-        results = client.gather(futures)
+    # Read every file or create delayed arrays
+    if in_memory:
+        data = [reader.data for reader in readers]
+        data = np.stack(data)
 
-        # Sort results by index
-        results = sorted(results, key=lambda result: result.index)
+    else:
+        data = [reader.dask_data for reader in readers]
+        data = da.stack(data)
 
-        # Stack all arrays and configure metadata
-        data = da.stack([result.data for result in results])
-        data = da.squeeze(data)
+    # Construct empty metadata to pass through
+    meta = {}
 
-        # Determine whether or not to read in full first
-        if compute:
-            data = data.compute()
+    # If multiple files were read we need to increment channel axis due to stack
+    # But we only do this is the channel axis isn't single to begin with
+    img_contains_channels = Dimensions.Channel in readers[0].dims
+    if img_contains_channels:
+        # Get channel names for display
+        channel_names = readers[0].get_channel_names()
 
-        # Construct metadata using any of the returns
-        # as there is an assumption it is all the same
-        channel_names = results[0].channel_names
-
-        # Construct visible array if channel names are present
-        if channel_names is not None:
-            # Only display first channel
-            visible = [True if i == 0 else False for i, c in enumerate(channel_names)]
-        else:
-            # No channels, always display
-            visible = True
+        # Fix channel axis in the case of squeezed or many image stack
+        channel_axis = readers[0].dims.index(Dimensions.Channel)
+        channel_axis += 1
 
         # Construct basic metadata
-        meta = {
-            "name": channel_names,
-            "visible": visible,
-        }
+        meta["name"] = channel_names
+        meta["channel_axis"] = channel_axis
 
-        # If multiple files were read we need to increment channel axis due to stack
-        channel_axis = results[0].channel_axis
-        if len(paths) > 1 and channel_axis is not None:
-            channel_axis += 1
-
-        # Only add channel axis if it's not None
-        if channel_axis is not None:
-            meta["channel_axis"] = channel_axis
-
-    return [(data, meta)]
+    return [(data, meta, "image")]
 
 
-def get_reader(
-    path: PathLike, compute: bool, processes=True
-) -> Optional[ReaderFunction]:
+def get_reader(path: PathLike, in_memory: bool) -> Optional[ReaderFunction]:
     """
     Given a single path or list of paths, return the appropriate aicsimageio reader.
     """
@@ -153,8 +79,8 @@ def get_reader(
         AICSImage.determine_reader(paths[0])
 
         # The above line didn't error so we know we have a supported reader
-        # Return a partial function with compute determined
-        return partial(reader_function, compute=compute, processes=processes)
+        # Return a partial function with in_memory determined
+        return partial(reader_function, in_memory=in_memory)
 
     # No supported reader, return None
     except exceptions.UnsupportedFileFormatError:
