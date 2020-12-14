@@ -39,7 +39,7 @@ dev_requirements = [
 ]
 
 requirements = [
-    "aicsimageio>=3.2.3",
+    "aicsimageio>=3.3.3",
     # napari plugins is the `napari>=0.3.0` release
     # If someone is trying to use plugins they should have everything they need
     # for this package to work
@@ -53,7 +53,7 @@ extra_requirements = {
     "all": [
         *requirements,
         *dev_requirements,
-    ]
+    ],
 }
 
 setup(
@@ -71,6 +71,7 @@ setup(
         "Natural Language :: English",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
     ],
     description="AICSImageIO bindings for napari",
     entry_points={
