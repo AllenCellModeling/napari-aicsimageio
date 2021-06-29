@@ -1,9 +1,3 @@
-# napari-aicsimageio
-
-AICSImageIO bindings for napari
-
----
-
 ## Features
 * Supports reading metadata and imaging data for:
     * `CZI`
