@@ -21,7 +21,7 @@ AICSImageIO bindings for napari
 
 ### Plugin Variants
 
-![screenshot of plugin sorter showing that napari-aicsimageio-in-memory should be placed above napari-aicsimageio-out-of-memory](./images/plugin-sorter.png)
+![screenshot of plugin sorter showing that napari-aicsimageio-in-memory should be placed above napari-aicsimageio-out-of-memory](https://raw.githubusercontent.com/AllenCellModeling/napari-aicsimageio/main/images/plugin-sorter.png)
 
 There are two variants of this plugin that are added during installation:
 * `aicsimageio-in-memory`, which reads an image fully into memory
@@ -39,21 +39,21 @@ raw data will be available in the napari viewer.
 In addition, when reading an OME-TIFF, you can view all OME metadata directly in the
 napari viewer thanks to `ome-types`.
 
-![screenshot of an OME-TIFF image view, multi-channel, z-stack, with metadata viewer](./images/ome-tiff-with-metadata-viewer.png)
+![screenshot of an OME-TIFF image view, multi-channel, z-stack, with metadata viewer](https://raw.githubusercontent.com/AllenCellModeling/napari-aicsimageio/main/images/ome-tiff-with-metadata-viewer.png)
 
 #### Mosaic CZI Reading
 
 When reading CZI images, if the image is a mosaic tiled image, `napari-aicsimageio`
 will return the reconstructed image:
 
-![screenshot of a reconstructed / restitched mosaic tile CZI](./images/tiled-czi.png)
+![screenshot of a reconstructed / restitched mosaic tile CZI](https://raw.githubusercontent.com/AllenCellModeling/napari-aicsimageio/main/images/tiled-czi.png)
 
 #### Mosaic LIF Reading
 
 When reading LIF images, if the image is a mosaic tiled image, `napari-aicsimageio`
 will return the reconstructed image:
 
-![screenshot of a reconstructed / restitched mosaic tile LIF](./images/tiled-lif.png)
+![screenshot of a reconstructed / restitched mosaic tile LIF](https://raw.githubusercontent.com/AllenCellModeling/napari-aicsimageio/main/images/tiled-lif.png)
 
 ## Development
 See [CONTRIBUTING.md](CONTRIBUTING.md) for information related to developing the code.
