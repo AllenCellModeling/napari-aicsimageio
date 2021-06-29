@@ -30,14 +30,20 @@ Ready to contribute? Here's how to set up `napari-aicsimageio` for local develop
     Ex: feature/read-tiff-files or bugfix/handle-file-not-found<br>
     Now you can make your changes locally.
 
-5. When you're done making changes, check that your changes pass linting and
+5. Download test resources:
+
+   ```bash
+   python scripts/download_test_resources.py
+   ```
+
+6. When you're done making changes, check that your changes pass linting and
    tests, including testing other Python versions with make:
 
     ```bash
     make build
     ```
 
-6. Commit your changes and push your branch to GitHub:
+7. Commit your changes and push your branch to GitHub:
 
     ```bash
     git add .
@@ -45,7 +51,7 @@ Ready to contribute? Here's how to set up `napari-aicsimageio` for local develop
     git push origin {your_development_type}/short-description
     ```
 
-7. Submit a pull request through the GitHub website.
+8. Submit a pull request through the GitHub website.
 
 ## Deploying
 

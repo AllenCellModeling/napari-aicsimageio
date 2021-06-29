@@ -67,7 +67,10 @@ instance/
 
 # Sphinx documentation
 docs/_build/
-docs/napari_aicsimageio.*rst
+docs/aicsimageio.*rst
+
+# Dask workers
+dask-worker-space/
 
 # PyBuilder
 target/
@@ -80,9 +83,6 @@ target/
 
 # celery beat schedule file
 celerybeat-schedule
-
-# Dask
-dask-worker-space
 
 # SageMath parsed files
 *.sage.py
@@ -99,11 +99,22 @@ ENV/
 .spyderproject
 .spyproject
 
+# Pycharm project stuff
+.idea
 # Rope project settings
 .ropeproject
+# VSCode
+.vscode
 
 # mkdocs documentation
 /site
 
 # mypy
 .mypy_cache/
+
+# Project specific standalone files
+workbench.ipynb
+
+# Ignore test resources directory
+resources/
+writer_products/
