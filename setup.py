@@ -15,45 +15,40 @@ setup_requirements = [
 test_requirements = [
     "black>=19.10b0",
     "codecov>=2.1.4",
+    "docutils>=0.10,<0.16",
     "flake8>=3.8.3",
     "flake8-debugger>=3.2.1",
-    "napari[pyqt5]>=0.3.0",
+    "isort>=5.7.0",
+    "mypy>=0.800",
+    "psutil>=5.7.0",
     "pytest>=5.4.3",
     "pytest-cov>=2.9.0",
     "pytest-raises>=0.11",
+    "quilt3~=3.4.0",
 ]
 
 dev_requirements = [
     *setup_requirements,
     *test_requirements,
-    "bumpversion>=0.6.0",
+    "bump2version>=1.0.1",
     "coverage>=5.1",
     "ipython>=7.15.0",
-    "m2r>=0.2.1",
     "pytest-runner>=5.2",
-    "Sphinx>=2.0.0b1,<3",
-    "sphinx_rtd_theme>=0.4.3",
     "tox>=3.15.2",
     "twine>=3.1.1",
     "wheel>=0.34.2",
 ]
 
 requirements = [
-    "aicsimageio>=3.3.3",
-    # napari plugins is the `napari>=0.3.0` release
-    # If someone is trying to use plugins they should have everything they need
-    # for this package to work
-    "napari_plugin_engine>=0.1.4",
+    "aicsimageio[all]~=4.0.2",
+    "napari~=0.4.10",
+    "napari_plugin_engine~=0.1.4",
 ]
 
 extra_requirements = {
     "setup": setup_requirements,
     "test": test_requirements,
     "dev": dev_requirements,
-    "all": [
-        *requirements,
-        *dev_requirements,
-    ],
 }
 
 setup(
@@ -69,15 +64,17 @@ setup(
         "Topic :: Scientific/Engineering :: Bio-Informatics",
         "License :: OSI Approved :: BSD License",
         "Natural Language :: English",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
     ],
-    description="AICSImageIO bindings for napari",
+    description=(
+        "AICSImageIO for napari. "
+        "Multiple file format reading directly into napari using pure Python."
+    ),
     entry_points={
         "napari.plugin": [
-            "aicsimageio = napari_aicsimageio.in_memory",
-            "aicsimageio_delayed = napari_aicsimageio.delayed",
+            "aicsimageio-out-of-memory = napari_aicsimageio.out_of_memory",
+            "aicsimageio-in-memory = napari_aicsimageio.in_memory",
         ],
     },
     install_requires=requirements,
@@ -85,10 +82,10 @@ setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     include_package_data=True,
-    keywords="napari, aicsimageio, imaging",
+    keywords="napari, aicsimageio, TIFF, CZI, LIF, imageio, image reading, metadata",
     name="napari-aicsimageio",
     packages=find_packages(exclude=["tests", "*.tests", "*.tests.*"]),
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     setup_requires=setup_requirements,
     test_suite="napari_aicsimageio/tests",
     tests_require=test_requirements,
