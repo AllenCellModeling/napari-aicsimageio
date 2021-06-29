@@ -1,0 +1,7 @@
+ignore:
+    - "napari_aicsimageio/vendor/.*"
+    - "**/__init__.py"
+
+coverage:
+  status:
+    patch: off
