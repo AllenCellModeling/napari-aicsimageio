@@ -67,7 +67,7 @@ instance/
 
 # Sphinx documentation
 docs/_build/
-docs/aicsimageio.*rst
+docs/napari_aicsimageio.*rst
 
 # Dask workers
 dask-worker-space/
