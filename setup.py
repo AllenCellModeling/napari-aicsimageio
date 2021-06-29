@@ -69,12 +69,12 @@ setup(
     ],
     description=(
         "AICSImageIO for napari. "
-        "File format reading directly into napari in pure Python."
+        "Multiple file format reading directly into napari using pure Python."
     ),
     entry_points={
         "napari.plugin": [
-            "aicsimageio = napari_aicsimageio.in_memory",
-            "aicsimageio_delayed = napari_aicsimageio.delayed",
+            "aicsimageio-out-of-memory = napari_aicsimageio.out_of_memory",
+            "aicsimageio-in-memory = napari_aicsimageio.in_memory",
         ],
     },
     install_requires=requirements,
