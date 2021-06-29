@@ -5,19 +5,20 @@ from functools import partial
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import xarray as xr
-from aicsimageio import AICSImage, exceptions
+from aicsimageio import AICSImage, exceptions, types
 from aicsimageio.dimensions import DimensionNames
 
 ###############################################################################
 
-LayerData = Union[Tuple[Any], Tuple[Any, Dict], Tuple[Any, Dict, str]]
+LayerData = Union[Tuple[types.ArrayLike, Dict[str, Any], str]]
 PathLike = Union[str, List[str]]
 ReaderFunction = Callable[[PathLike], List[LayerData]]
 
 ###############################################################################
 
-def _get_full_image_data(img: AICSImage, in_memory: bool) -> xr.DataArray:
-    if (DimensionNames.MosaicTile in img.reader.dims.order):
+
+def _get_full_image_data(img: AICSImage, in_memory: bool) -> Optional[xr.DataArray]:
+    if DimensionNames.MosaicTile in img.reader.dims.order:
         try:
             if in_memory:
                 return img.reader.mosaic_xarray_data
@@ -30,7 +31,6 @@ def _get_full_image_data(img: AICSImage, in_memory: bool) -> xr.DataArray:
                 "AICSImageIO: Mosaic tile stitching "
                 "not yet supported for this file format reader."
             )
-            return None
 
     else:
         if in_memory:
@@ -38,13 +38,19 @@ def _get_full_image_data(img: AICSImage, in_memory: bool) -> xr.DataArray:
         else:
             return img.reader.xarray_dask_data
 
+    return None
+
+
 def _get_meta(img: AICSImage) -> Any:
     """
     This return type should change in the future to always return OME from ome-types.
     """
     return img.metadata
 
-def reader_function(path: PathLike, in_memory: bool, scene_name: Optional[str] = None) -> List[LayerData]:
+
+def reader_function(
+    path: PathLike, in_memory: bool, scene_name: Optional[str] = None
+) -> Optional[List[LayerData]]:
     """
     Given a single path return a list of LayerData tuples.
     """
@@ -66,26 +72,30 @@ def reader_function(path: PathLike, in_memory: bool, scene_name: Optional[str] =
 
     data = _get_full_image_data(img, in_memory=in_memory)
 
-    # Metadata to provide with data
-    meta = {}
-    if DimensionNames.Channel in data.dims:
-        # Construct basic metadata
-        meta["name"] = data.coords[DimensionNames.Channel].data.tolist()
-        meta["channel_axis"] = data.dims.index(DimensionNames.Channel)
-    
-    # Not multi-channel, use current scene as image name
+    # Catch None data
+    if data is None:
+        return None
     else:
-        meta["name"] = img.reader.current_scene
+        # Metadata to provide with data
+        meta = {}
+        if DimensionNames.Channel in data.dims:
+            # Construct basic metadata
+            meta["name"] = data.coords[DimensionNames.Channel].data.tolist()
+            meta["channel_axis"] = data.dims.index(DimensionNames.Channel)
 
-    # Handle samples / RGB
-    if DimensionNames.Samples in img.reader.dims.order:
-        meta["rgb"] = True
-    
-    # Apply all other metadata
-    meta_reader = partial(_get_meta, img=img)
-    meta["metadata"] = meta_reader
+        # Not multi-channel, use current scene as image name
+        else:
+            meta["name"] = img.reader.current_scene
 
-    return [(data, meta, "image")]
+        # Handle samples / RGB
+        if DimensionNames.Samples in img.reader.dims.order:
+            meta["rgb"] = True
+
+        # Apply all other metadata
+        meta_reader = partial(_get_meta, img=img)
+        meta["metadata"] = meta_reader
+
+        return [(data.data, meta, "image")]
 
 
 def get_reader(path: PathLike, in_memory: bool) -> Optional[ReaderFunction]:
@@ -105,8 +115,9 @@ def get_reader(path: PathLike, in_memory: bool) -> Optional[ReaderFunction]:
 
         # The above line didn't error so we know we have a supported reader
         # Return a partial function with in_memory determined
-        return partial(reader_function, in_memory=in_memory)
+        return partial(reader_function, in_memory=in_memory)  # type: ignore
 
     # No supported reader, return None
     except exceptions.UnsupportedFileFormatError:
         print("AICSImageIO: Unsupported file format.")
+        return None
