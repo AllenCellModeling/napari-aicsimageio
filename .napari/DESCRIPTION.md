@@ -1,8 +1,5 @@
 # napari-aicsimageio
 
-[![Build Status](https://github.com/AllenCellModeling/napari-aicsimageio/workflows/Build%20Master/badge.svg)](https://github.com/AllenCellModeling/napari-aicsimageio/actions)
-[![Code Coverage](https://codecov.io/gh/AllenCellModeling/napari-aicsimageio/branch/master/graph/badge.svg)](https://codecov.io/gh/AllenCellModeling/napari-aicsimageio)
-
 AICSImageIO bindings for napari
 
 ---
@@ -15,18 +12,14 @@ AICSImageIO bindings for napari
     * Any formats supported by [aicsimageio](https://github.com/AllenCellModeling/aicsimageio)
     * Any additional format supported by [imageio](https://github.com/imageio/imageio)
 
-## Installation
-**Stable Release:** `pip install napari-aicsimageio`<br>
-**Development Head:** `pip install git+https://github.com/AllenCellModeling/napari-aicsimageio.git`
-
 ### Plugin Variants
 
 ![screenshot of plugin sorter showing that napari-aicsimageio-in-memory should be placed above napari-aicsimageio-out-of-memory](https://github.com/AllenCellModeling/napari-aicsimageio/tree/main/images/plugin-sorter.png)
 
-There are two variants of this plugin that are created during installation:
-* `aicsimageio-in-memory`, which reads the image fully into memory
-* `aicsimageio-out-of-memory`,
-which delays reading ZYX chunks until requested for large file support
+There are two variants of this plugin that are added during installation:
+* `aicsimageio-in-memory`, which reads an image fully into memory
+* `aicsimageio-out-of-memory`, which delays reading ZYX chunks until required.
+This allows for incredible large files to be read and displayed.
 
 ## Examples of Features
 
@@ -55,12 +48,10 @@ will return the reconstructed image:
 
 ![screenshot of a reconstructed / restitched mosaic tile LIF](https://github.com/AllenCellModeling/napari-aicsimageio/tree/main/images/tiled-lif.png)
 
-## Development
-See [CONTRIBUTING.md](CONTRIBUTING.md) for information related to developing the code.
+## Citation
 
-For additional file format support, contributed directly to
-[AICSImageIO](https://github.com/AllenCellModeling/aicsimageio).
-New file format support will become directly available in this
-plugin on new `aicsimageio` releases.
+If you find `aicsimageio` _(or `napari-aicsimageio`)_ useful, please cite as:
 
-***Free software: BSD-3-Clause***
+> AICSImageIO Contributors (2021). AICSImageIO: Image Reading, Metadata Conversion, and Image Writing for Microscopy Images in Pure Python [Computer software]. GitHub. https://github.com/AllenCellModeling/aicsimageio
+
+_Free software: BSD-3-Clause_

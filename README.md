@@ -23,10 +23,10 @@ AICSImageIO bindings for napari
 
 ![screenshot of plugin sorter showing that napari-aicsimageio-in-memory should be placed above napari-aicsimageio-out-of-memory](./images/plugin-sorter.png)
 
-There are two variants of this plugin that are created during installation:
-* `aicsimageio-in-memory`, which reads the image fully into memory
-* `aicsimageio-out-of-memory`,
-which delays reading ZYX chunks until requested for large file support
+There are two variants of this plugin that are added during installation:
+* `aicsimageio-in-memory`, which reads an image fully into memory
+* `aicsimageio-out-of-memory`, which delays reading ZYX chunks until required.
+This allows for incredible large files to be read and displayed.
 
 ## Examples of Features
 
@@ -63,4 +63,10 @@ For additional file format support, contributed directly to
 New file format support will become directly available in this
 plugin on new `aicsimageio` releases.
 
-***Free software: BSD-3-Clause***
+## Citation
+
+If you find `aicsimageio` _(or `napari-aicsimageio`)_ useful, please cite as:
+
+> AICSImageIO Contributors (2021). AICSImageIO: Image Reading, Metadata Conversion, and Image Writing for Microscopy Images in Pure Python [Computer software]. GitHub. https://github.com/AllenCellModeling/aicsimageio
+
+_Free software: BSD-3-Clause_
