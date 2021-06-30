@@ -66,6 +66,7 @@ setup(
         "Natural Language :: English",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Operating System :: OS Independent",
     ],
     description=(
         "AICSImageIO for napari. "
@@ -91,6 +92,12 @@ setup(
     tests_require=test_requirements,
     extras_require=extra_requirements,
     url="https://github.com/AllenCellModeling/napari-aicsimageio",
+    project_urls={
+        "Source Code": "https://github.com/AllenCellModeling/napari-aicsimageio",
+        "Bug Tracker": "https://github.com/AllenCellModeling/napari-aicsimageio/issues",
+        "Documentation": "https://github.com/AllenCellModeling/napari-aicsimageio#README.md",
+        "User Support": "https://github.com/AllenCellModeling/napari-aicsimageio/issues",
+    },
     # Do not edit this string manually, always use bumpversion
     # Details in CONTRIBUTING.rst
     version="0.3.1",
