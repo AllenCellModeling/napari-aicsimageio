@@ -93,7 +93,7 @@ def reader_function(
 
         # Apply all other metadata
         meta_reader = partial(_get_meta, img=img)
-        meta["metadata"] = {'ome_types': meta_reader}
+        meta["metadata"] = {"ome_types": meta_reader}
 
         return [(data.data, meta, "image")]
 
