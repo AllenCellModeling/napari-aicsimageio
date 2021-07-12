@@ -121,3 +121,13 @@ def get_reader(path: PathLike, in_memory: bool) -> Optional[ReaderFunction]:
     except exceptions.UnsupportedFileFormatError:
         print("AICSImageIO: Unsupported file format.")
         return None
+
+    except Exception as e:
+        print("AICSImageIO: exception occurred during reading...")
+        print(e)
+        print(
+            "If this issue looks like a problem with AICSImageIO, "
+            "please file a bug report: "
+            "https://github.com/AllenCellModeling/napari-aicsimageio"
+        )
+        return None
