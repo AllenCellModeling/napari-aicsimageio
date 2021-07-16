@@ -41,13 +41,6 @@ def _get_full_image_data(img: AICSImage, in_memory: bool) -> Optional[xr.DataArr
     return None
 
 
-def _get_meta(img: AICSImage) -> Any:
-    """
-    This return type should change in the future to always return OME from ome-types.
-    """
-    return img.metadata
-
-
 def reader_function(
     path: PathLike, in_memory: bool, scene_name: Optional[str] = None
 ) -> Optional[List[LayerData]]:
@@ -92,8 +85,7 @@ def reader_function(
             meta["rgb"] = True
 
         # Apply all other metadata
-        meta_reader = partial(_get_meta, img=img)
-        meta["metadata"] = {"ome_types": meta_reader}
+        meta["metadata"] = {"ome_types": img.metadata}
 
         return [(data.data, meta, "image")]
 
