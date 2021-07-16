@@ -36,17 +36,29 @@ CZI_FILE = "variable_scene_shape_first_scene_pyramid.czi"
         (
             CZI_FILE,
             (3, 6183, 7705),
-            {"name": ["EGFP", "mCher", "PGC"], "channel_axis": 0},
+            {
+                "name": ["EGFP", "mCher", "PGC"],
+                "channel_axis": 0,
+                "scale": (9.08210704883533, 9.08210704883533),
+            },
         ),
         (
             OME_TIFF,
             (1, 4, 65, 600, 900),
-            {"name": ["Bright_2", "EGFP", "CMDRP", "H3342"], "channel_axis": 1},
+            {
+                "name": ["Bright_2", "EGFP", "CMDRP", "H3342"],
+                "channel_axis": 1,
+                "scale": (0.29, 0.10833333333333332, 0.10833333333333332),
+            },
         ),
         (
             LIF_FILE,
             (1, 4, 1, 5622, 7666),
-            {"name": ["Gray", "Red", "Green", "Cyan"], "channel_axis": 1},
+            {
+                "name": ["Gray", "Red", "Green", "Cyan"],
+                "channel_axis": 1,
+                "scale": (4.984719055966396, 4.984719055966396),
+            },
         ),
     ],
 )
