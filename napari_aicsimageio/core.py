@@ -84,6 +84,20 @@ def reader_function(
         if DimensionNames.Samples in img.reader.dims.order:
             meta["rgb"] = True
 
+        # Handle scales
+        scale: List[float] = []
+        for dim in img.reader.dims.order:
+            if dim in [
+                DimensionNames.SpatialX,
+                DimensionNames.SpatialY,
+                DimensionNames.SpatialZ,
+            ]:
+                scale.append(getattr(img.physical_pixel_sizes, dim))
+
+        # Apply scales
+        if len(scale) > 0:
+            meta["scale"] = tuple(scale)
+
         # Apply all other metadata
         meta["metadata"] = {"ome_types": img.metadata}
 
