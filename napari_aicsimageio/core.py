@@ -92,7 +92,9 @@ def reader_function(
                 DimensionNames.SpatialY,
                 DimensionNames.SpatialZ,
             ]:
-                scale.append(getattr(img.physical_pixel_sizes, dim))
+                scale_val = getattr(img.physical_pixel_sizes, dim)
+                if scale_val is not None:
+                    scale.append(scale_val)
 
         # Apply scales
         if len(scale) > 0:
