@@ -91,11 +91,7 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> Optional[xr.DataArray]:
             else:
                 data = img.reader.xarray_dask_data
         meta = _get_meta(data, img)
-        viewer.add_image(
-            data,
-            name=scene,
-            metadata=meta,
-        )
+        viewer.add_image(data, name=scene, metadata=meta, scale=meta["scale"])
 
     list_widget.currentItemChanged.connect(open_scene)
     return None
