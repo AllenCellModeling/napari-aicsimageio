@@ -67,6 +67,7 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> Optional[xr.DataArray]:
     for scene in img.scenes:
         list_widget.addItem(scene)
     viewer = _get_viewer()
+    viewer.window.add_dock_widget([list_widget], area="right")
 
     def open_scene(item):
         scene = item.text()
@@ -74,9 +75,9 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> Optional[xr.DataArray]:
         if DimensionNames.MosaicTile in img.reader.dims.order:
             try:
                 if in_memory:
-                    return img.reader.mosaic_xarray_data
+                    data = img.reader.mosaic_xarray_data
                 else:
-                    return img.reader.mosaic_xarray_dask_data
+                    data = img.reader.mosaic_xarray_dask_data
 
             # Catch reader does not support tile stitching
             except NotImplementedError:
@@ -85,16 +86,14 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> Optional[xr.DataArray]:
                     "not yet supported for this file format reader."
                 )
         else:
-            print(img.scene)
             if in_memory:
-                return img.reader.xarray_data
+                data = img.reader.xarray_data
             else:
-                return img.reader.xarray_dask_data
+                data = img.reader.xarray_dask_data
+        meta = _get_meta(data, img)
+        return [(data.data, meta, "image")]
 
     list_widget.currentItemChanged.connect(open_scene)
-    viewer.window.add_dock_widget([list_widget], area="right")
-
-    return None
 
 
 def _get_meta(data, img):
@@ -119,7 +118,6 @@ def _get_meta(data, img):
             DimensionNames.SpatialZ,
         ]:
             scale_val = getattr(img.physical_pixel_sizes, dim)
-            print(scale_val)
             if scale_val is not None:
                 scale.append(scale_val)
     # Apply scales
@@ -154,17 +152,16 @@ def reader_function(
             f"Supporting more than the first scene is a work in progress. "
             f"Will show scenes, but load scene: '{img.current_scene}'."
         )
-        # data = _get_scenes(img, in_memory=in_memory)
-        data = _get_full_image_data(img, in_memory=in_memory)
+        _get_scenes(img, in_memory=in_memory)
     else:
         data = _get_full_image_data(img, in_memory=in_memory)
 
-    # Catch None data
-    if data is None:
-        return None
-    else:
-        meta = _get_meta(data, img)
-        return [(data.data, meta, "image")]
+        # Catch None data
+        if data is None:
+            return None
+        else:
+            meta = _get_meta(data, img)
+            return [(data.data, meta, "image")]
 
 
 def get_reader(path: PathLike, in_memory: bool) -> Optional[ReaderFunction]:
