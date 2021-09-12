@@ -91,9 +91,14 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> Optional[xr.DataArray]:
             else:
                 data = img.reader.xarray_dask_data
         meta = _get_meta(data, img)
-        return [(data.data, meta, "image")]
+        viewer.add_image(
+            data,
+            name=scene,
+            metadata=meta,
+        )
 
     list_widget.currentItemChanged.connect(open_scene)
+    return None
 
 
 def _get_meta(data, img):
@@ -153,6 +158,7 @@ def reader_function(
             f"Will show scenes, but load scene: '{img.current_scene}'."
         )
         _get_scenes(img, in_memory=in_memory)
+        return [(None,)]
     else:
         data = _get_full_image_data(img, in_memory=in_memory)
 
