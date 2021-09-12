@@ -67,10 +67,68 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> Optional[xr.DataArray]:
     for scene in img.scenes:
         list_widget.addItem(scene)
     viewer = _get_viewer()
-    # list_widget.currentItemChanged.connect(open_scene)
+
+    def open_scene(item):
+        scene = item.text()
+        img.set_scene(scene)
+        if DimensionNames.MosaicTile in img.reader.dims.order:
+            try:
+                if in_memory:
+                    return img.reader.mosaic_xarray_data
+                else:
+                    return img.reader.mosaic_xarray_dask_data
+
+            # Catch reader does not support tile stitching
+            except NotImplementedError:
+                print(
+                    "AICSImageIO: Mosaic tile stitching "
+                    "not yet supported for this file format reader."
+                )
+        else:
+            print(img.scene)
+            if in_memory:
+                return img.reader.xarray_data
+            else:
+                return img.reader.xarray_dask_data
+
+    list_widget.currentItemChanged.connect(open_scene)
     viewer.window.add_dock_widget([list_widget], area="right")
 
     return None
+
+
+def _get_meta(data, img):
+    # Metadata to provide with data
+    meta = {}
+    if DimensionNames.Channel in data.dims:
+        # Construct basic metadata
+        meta["name"] = data.coords[DimensionNames.Channel].data.tolist()
+        meta["channel_axis"] = data.dims.index(DimensionNames.Channel)
+    # Not multi-channel, use current scene as image name
+    else:
+        meta["name"] = img.reader.current_scene
+    # Handle samples / RGB
+    if DimensionNames.Samples in img.reader.dims.order:
+        meta["rgb"] = True
+    # Handle scales
+    scale: List[float] = []
+    for dim in img.reader.dims.order:
+        if dim in [
+            DimensionNames.SpatialX,
+            DimensionNames.SpatialY,
+            DimensionNames.SpatialZ,
+        ]:
+            scale_val = getattr(img.physical_pixel_sizes, dim)
+            print(scale_val)
+            if scale_val is not None:
+                scale.append(scale_val)
+    # Apply scales
+    if len(scale) > 0:
+        meta["scale"] = tuple(scale)
+    # Apply all other metadata
+    meta["metadata"] = {"ome_types": img.metadata}
+
+    return meta
 
 
 def reader_function(
@@ -96,7 +154,7 @@ def reader_function(
             f"Supporting more than the first scene is a work in progress. "
             f"Will show scenes, but load scene: '{img.current_scene}'."
         )
-        _get_scenes(img, in_memory=in_memory)
+        # data = _get_scenes(img, in_memory=in_memory)
         data = _get_full_image_data(img, in_memory=in_memory)
     else:
         data = _get_full_image_data(img, in_memory=in_memory)
@@ -105,40 +163,7 @@ def reader_function(
     if data is None:
         return None
     else:
-        # Metadata to provide with data
-        meta = {}
-        if DimensionNames.Channel in data.dims:
-            # Construct basic metadata
-            meta["name"] = data.coords[DimensionNames.Channel].data.tolist()
-            meta["channel_axis"] = data.dims.index(DimensionNames.Channel)
-
-        # Not multi-channel, use current scene as image name
-        else:
-            meta["name"] = img.reader.current_scene
-
-        # Handle samples / RGB
-        if DimensionNames.Samples in img.reader.dims.order:
-            meta["rgb"] = True
-
-        # Handle scales
-        scale: List[float] = []
-        for dim in img.reader.dims.order:
-            if dim in [
-                DimensionNames.SpatialX,
-                DimensionNames.SpatialY,
-                DimensionNames.SpatialZ,
-            ]:
-                scale_val = getattr(img.physical_pixel_sizes, dim)
-                if scale_val is not None:
-                    scale.append(scale_val)
-
-        # Apply scales
-        if len(scale) > 0:
-            meta["scale"] = tuple(scale)
-
-        # Apply all other metadata
-        meta["metadata"] = {"ome_types": img.metadata}
-
+        meta = _get_meta(data, img)
         return [(data.data, meta, "image")]
 
 
