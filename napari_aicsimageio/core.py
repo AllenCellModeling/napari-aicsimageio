@@ -19,6 +19,7 @@ ReaderFunction = Callable[[PathLike], List[LayerData]]
 
 ###############################################################################
 # _get_viewer() function from https://github.com/napari/napari/issues/2202
+# To provide access to the napari viewer to make the dock widget
 # Copyright (c) 2021 Jonas Windhager
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 # The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
@@ -62,13 +63,16 @@ def _get_full_image_data(img: AICSImage, in_memory: bool) -> Optional[xr.DataArr
     return None
 
 
+# Function to handle multi-scene files.
 def _get_scenes(img: AICSImage, in_memory: bool) -> Optional[xr.DataArray]:
+    # Create the list widget and populate with the scenes in the file
     list_widget = QListWidget()
     for scene in img.scenes:
         list_widget.addItem(scene)
     viewer = _get_viewer()
-    viewer.window.add_dock_widget([list_widget], area="right")
+    viewer.window.add_dock_widget([list_widget], area="right", name="Scene Selector")
 
+    # Function to create image layer from a scene selected in the list widget
     def open_scene(item):
         scene = item.text()
         img.set_scene(scene)
@@ -97,8 +101,8 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> Optional[xr.DataArray]:
     return None
 
 
+# Function to get Metadata to provide with data
 def _get_meta(data, img):
-    # Metadata to provide with data
     meta = {}
     if DimensionNames.Channel in data.dims:
         # Construct basic metadata
@@ -147,13 +151,16 @@ def reader_function(
     # Open file and get data
     img = AICSImage(path)
 
+    # Check for multiple scenes
     if len(img.scenes) > 1:
         print(
             f"AICSImageIO: Image contains {len(img.scenes)} scenes. "
             f"Supporting more than the first scene is a work in progress. "
-            f"Will show scenes, but load scene: '{img.current_scene}'."
+            f"Select a scene from the list widget. There may be dragons!"
         )
+        # Launch the list widget
         _get_scenes(img, in_memory=in_memory)
+        # Return an empty LayerData list, because Layers will be handled via the widget. HT Jonas Windhager
         return [(None,)]
     else:
         data = _get_full_image_data(img, in_memory=in_memory)
