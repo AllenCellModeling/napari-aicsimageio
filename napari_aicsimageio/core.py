@@ -7,12 +7,33 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 import xarray as xr
 from aicsimageio import AICSImage, exceptions, types
 from aicsimageio.dimensions import DimensionNames
+from qtpy.QtWidgets import QListWidget
+from qtpy.QtCore import Qt
+from napari import Viewer
 
 ###############################################################################
 
 LayerData = Union[Tuple[types.ArrayLike, Dict[str, Any], str]]
 PathLike = Union[str, List[str]]
 ReaderFunction = Callable[[PathLike], List[LayerData]]
+
+###############################################################################
+# _get_viewer() function from https://github.com/napari/napari/issues/2202
+# Copyright (c) 2021 Jonas Windhager
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+def _get_viewer() -> Optional[Viewer]:
+    import inspect
+
+    frame = inspect.currentframe().f_back
+    while frame:
+        instance = frame.f_locals.get("self")
+        if instance is not None and isinstance(instance, Viewer):
+            return instance
+        frame = frame.f_back
+    return None
+
 
 ###############################################################################
 
@@ -41,6 +62,17 @@ def _get_full_image_data(img: AICSImage, in_memory: bool) -> Optional[xr.DataArr
     return None
 
 
+def _get_scenes(img: AICSImage, in_memory: bool) -> Optional[xr.DataArray]:
+    list_widget = QListWidget()
+    for scene in img.scenes:
+        list_widget.addItem(scene)
+    viewer = _get_viewer()
+    # list_widget.currentItemChanged.connect(open_scene)
+    viewer.window.add_dock_widget([list_widget], area="right")
+
+    return None
+
+
 def reader_function(
     path: PathLike, in_memory: bool, scene_name: Optional[str] = None
 ) -> Optional[List[LayerData]]:
@@ -57,13 +89,17 @@ def reader_function(
 
     # Open file and get data
     img = AICSImage(path)
-    print(
-        f"AICSImageIO: Image contains {len(img.scenes)} scenes. "
-        f"napari-aicsimageio currently only supports loading first scene, "
-        f"will load scene: '{img.current_scene}'."
-    )
 
-    data = _get_full_image_data(img, in_memory=in_memory)
+    if len(img.scenes) > 1:
+        print(
+            f"AICSImageIO: Image contains {len(img.scenes)} scenes. "
+            f"Supporting more than the first scene is a work in progress. "
+            f"Will show scenes, but load scene: '{img.current_scene}'."
+        )
+        _get_scenes(img, in_memory=in_memory)
+        data = _get_full_image_data(img, in_memory=in_memory)
+    else:
+        data = _get_full_image_data(img, in_memory=in_memory)
 
     # Catch None data
     if data is None:
