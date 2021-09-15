@@ -110,7 +110,7 @@ MULTISCENE_FILE = "s_3_t_1_c_3_z_5.czi"
 @pytest.mark.parametrize(
     "filename, nr_widgets, expected_shape",
     [
-        (SINGLESCENE_FILE, 0, (325, 475)),
+        (SINGLESCENE_FILE, 0, (1, 325, 475)),
         (MULTISCENE_FILE, 1, (3, 5, 325, 475)),
     ],
 )
@@ -143,3 +143,11 @@ def test_for_multiscene_widget(
 
     if len(viewer.window._dock_widgets) != 0:
         assert list(viewer.window._dock_widgets.keys())[0] == "Scene Selector"
+        viewer.window._dock_widgets["Scene Selector"].widget().setCurrentRow(1)
+        data = viewer.layers[0].data
+        assert isinstance(data.data, expected_dtype)
+        assert data.shape == expected_shape
+    else:
+        data, meta, _ = reader(path)[0]
+        assert isinstance(data, expected_dtype)
+        assert data.shape == expected_shape
