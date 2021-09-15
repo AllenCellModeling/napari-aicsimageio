@@ -4,12 +4,11 @@
 from functools import partial
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
-import xarray as xr
 import napari
-
-from qtpy.QtWidgets import QListWidget
+import xarray as xr
 from aicsimageio import AICSImage, exceptions, types
 from aicsimageio.dimensions import DimensionNames
+from qtpy.QtWidgets import QListWidget
 
 ###############################################################################
 
