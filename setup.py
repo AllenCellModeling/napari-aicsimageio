@@ -22,6 +22,7 @@ test_requirements = [
     "mypy>=0.800",
     "psutil>=5.7.0",
     "pytest>=5.4.3",
+    "pytest-qt",
     "pytest-cov>=2.9.0",
     "pytest-raises>=0.11",
     "quilt3~=3.4.0",
