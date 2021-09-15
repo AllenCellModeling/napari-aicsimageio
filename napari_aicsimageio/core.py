@@ -69,14 +69,14 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> None:
     # Create the list widget and populate with the scenes in the file
     list_widget = QListWidget()
     for i, scene in enumerate(img.scenes):
-        list_widget.addItem(f"{i} -- {scene}")
+        list_widget.addItem(f"{i} :: {scene}")
     viewer = napari.current_viewer()
     viewer.window.add_dock_widget([list_widget], area="right", name="Scene Selector")
 
     # Function to create image layer from a scene selected in the list widget
     def open_scene(item):
         scene_text = item.text()
-        scene_index = int(scene_text.split(" -- ")[0])
+        scene_index = int(scene_text.split(" :: ")[0])
         img.set_scene(scene_index)
         if DimensionNames.MosaicTile in img.reader.dims.order:
             try:
@@ -97,7 +97,7 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> None:
             else:
                 data = img.reader.xarray_dask_data
         meta = _get_meta(data, img)
-        viewer.add_image(data, name=scene, metadata=meta, scale=meta["scale"])
+        viewer.add_image(data, name=scene_text, metadata=meta, scale=meta["scale"])
 
     list_widget.currentItemChanged.connect(open_scene)
     return None
