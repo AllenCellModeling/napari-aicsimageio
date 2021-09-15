@@ -65,18 +65,19 @@ def _get_full_image_data(img: AICSImage, in_memory: bool) -> Optional[xr.DataArr
 
 
 # Function to handle multi-scene files.
-def _get_scenes(img: AICSImage, in_memory: bool) -> Optional[xr.DataArray]:
+def _get_scenes(img: AICSImage, in_memory: bool) -> None:
     # Create the list widget and populate with the scenes in the file
     list_widget = QListWidget()
-    for scene in img.scenes:
-        list_widget.addItem(scene)
+    for i, scene in enumerate(img.scenes):
+        list_widget.addItem(f"{i} -- {scene}")
     viewer = napari.current_viewer()
     viewer.window.add_dock_widget([list_widget], area="right", name="Scene Selector")
 
     # Function to create image layer from a scene selected in the list widget
     def open_scene(item):
-        scene = item.text()
-        img.set_scene(scene)
+        scene_text = item.text()
+        scene_index = int(scene_text.split(" -- ")[0])
+        img.set_scene(scene_index)
         if DimensionNames.MosaicTile in img.reader.dims.order:
             try:
                 if in_memory:
