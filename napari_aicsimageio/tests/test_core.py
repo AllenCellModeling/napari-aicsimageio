@@ -57,7 +57,7 @@ CZI_FILE = "variable_scene_shape_first_scene_pyramid.czi"
             {
                 "name": ["Gray", "Red", "Green", "Cyan"],
                 "channel_axis": 1,
-                "scale": (4.984719055966396, 4.984719055966396),
+                "scale": (0.20061311154598827, 0.20061311154598827),
             },
         ),
     ],
