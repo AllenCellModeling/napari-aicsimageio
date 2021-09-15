@@ -8,7 +8,6 @@ import xarray as xr
 from aicsimageio import AICSImage, exceptions, types
 from aicsimageio.dimensions import DimensionNames
 from qtpy.QtWidgets import QListWidget
-from qtpy.QtCore import Qt
 from napari import Viewer
 
 ###############################################################################
@@ -21,9 +20,9 @@ ReaderFunction = Callable[[PathLike], List[LayerData]]
 # _get_viewer() function from https://github.com/napari/napari/issues/2202
 # To provide access to the napari viewer to make the dock widget
 # Copyright (c) 2021 Jonas Windhager
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# Licensed under MIT License
+
+
 def _get_viewer() -> Optional[Viewer]:
     import inspect
 
@@ -160,7 +159,8 @@ def reader_function(
         )
         # Launch the list widget
         _get_scenes(img, in_memory=in_memory)
-        # Return an empty LayerData list, because Layers will be handled via the widget. HT Jonas Windhager
+        # Return an empty LayerData list; ImgLayers will be handled via the widget.
+        # HT Jonas Windhager
         return [(None,)]
     else:
         data = _get_full_image_data(img, in_memory=in_memory)
