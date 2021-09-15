@@ -122,7 +122,7 @@ def test_for_multiscene_widget(
     nr_widgets: int,
     expected_dtype: type,
     expected_shape: Tuple[int, ...],
-):
+) -> None:
     # Make a viewer
     viewer = make_napari_viewer()
     assert len(viewer.layers) == 0
@@ -141,5 +141,5 @@ def test_for_multiscene_widget(
     # Check for list widget
     assert len(viewer.window._dock_widgets) == nr_widgets
 
-    if len(viewer.window._dock_widgets) > 0:
+    if len(viewer.window._dock_widgets) != 0:
         assert list(viewer.window._dock_widgets.keys())[0] == "Scene Selector"
