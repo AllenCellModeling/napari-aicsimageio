@@ -51,7 +51,7 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> None:
     for i, scene in enumerate(img.scenes):
         list_widget.addItem(f"{i} :: {scene}")
     viewer = napari.current_viewer()
-    viewer.window.add_dock_widget([list_widget], area="right", name="Scene Selector")
+    viewer.window.add_dock_widget(list_widget, area="right", name="Scene Selector")
 
     # Function to create image layer from a scene selected in the list widget
     def open_scene(item):
