@@ -8,8 +8,6 @@ import xarray as xr
 from aicsimageio import AICSImage, exceptions, types
 from aicsimageio.dimensions import DimensionNames
 from qtpy.QtWidgets import QListWidget
-
-# from napari import Viewer
 import napari
 
 ###############################################################################
@@ -17,25 +15,6 @@ import napari
 LayerData = Union[Tuple[types.ArrayLike, Dict[str, Any], str]]
 PathLike = Union[str, List[str]]
 ReaderFunction = Callable[[PathLike], List[LayerData]]
-
-###############################################################################
-# _get_viewer() function from https://github.com/napari/napari/issues/2202
-# To provide access to the napari viewer to make the dock widget
-# Copyright (c) 2021 Jonas Windhager
-# Licensed under MIT License
-
-
-# def _get_viewer() -> Optional[Viewer]:
-#     import inspect
-
-#     frame = inspect.currentframe().f_back
-#     while frame:
-#         instance = frame.f_locals.get("self")
-#         if instance is not None and isinstance(instance, Viewer):
-#             return instance
-#         frame = frame.f_back
-#     return None
-
 
 ###############################################################################
 
@@ -66,7 +45,8 @@ def _get_full_image_data(img: AICSImage, in_memory: bool) -> Optional[xr.DataArr
 
 # Function to handle multi-scene files.
 def _get_scenes(img: AICSImage, in_memory: bool) -> None:
-    # Create the list widget and populate with the scenes in the file
+
+    # Create the list widget and populate with the ids & scenes in the file
     list_widget = QListWidget()
     for i, scene in enumerate(img.scenes):
         list_widget.addItem(f"{i} :: {scene}")
@@ -76,6 +56,8 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> None:
     # Function to create image layer from a scene selected in the list widget
     def open_scene(item):
         scene_text = item.text()
+
+        # Use scene indexes to cover for duplicate names
         scene_index = int(scene_text.split(" :: ")[0])
         img.set_scene(scene_index)
         if DimensionNames.MosaicTile in img.reader.dims.order:
@@ -106,6 +88,7 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> None:
 def _get_meta(data, img):
     meta = {}
     if DimensionNames.Channel in data.dims:
+
         # Construct basic metadata
         meta["name"] = data.coords[DimensionNames.Channel].data.tolist()
         meta["channel_axis"] = data.dims.index(DimensionNames.Channel)
@@ -161,11 +144,12 @@ def reader_function(
     if len(img.scenes) > 1:
         print(
             f"AICSImageIO: Image contains {len(img.scenes)} scenes. "
-            f"Supporting more than the first scene is a work in progress. "
+            f"Supporting more than the first scene is experimental. "
             f"Select a scene from the list widget. There may be dragons!"
         )
         # Launch the list widget
         _get_scenes(img, in_memory=in_memory)
+
         # Return an empty LayerData list; ImgLayers will be handled via the widget.
         # HT Jonas Windhager
         return [(None,)]
