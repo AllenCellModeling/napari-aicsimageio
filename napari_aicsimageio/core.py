@@ -8,7 +8,9 @@ import xarray as xr
 from aicsimageio import AICSImage, exceptions, types
 from aicsimageio.dimensions import DimensionNames
 from qtpy.QtWidgets import QListWidget
-from napari import Viewer
+
+# from napari import Viewer
+import napari
 
 ###############################################################################
 
@@ -23,16 +25,16 @@ ReaderFunction = Callable[[PathLike], List[LayerData]]
 # Licensed under MIT License
 
 
-def _get_viewer() -> Optional[Viewer]:
-    import inspect
+# def _get_viewer() -> Optional[Viewer]:
+#     import inspect
 
-    frame = inspect.currentframe().f_back
-    while frame:
-        instance = frame.f_locals.get("self")
-        if instance is not None and isinstance(instance, Viewer):
-            return instance
-        frame = frame.f_back
-    return None
+#     frame = inspect.currentframe().f_back
+#     while frame:
+#         instance = frame.f_locals.get("self")
+#         if instance is not None and isinstance(instance, Viewer):
+#             return instance
+#         frame = frame.f_back
+#     return None
 
 
 ###############################################################################
@@ -68,7 +70,7 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> Optional[xr.DataArray]:
     list_widget = QListWidget()
     for scene in img.scenes:
         list_widget.addItem(scene)
-    viewer = _get_viewer()
+    viewer = napari.current_viewer()
     viewer.window.add_dock_widget([list_widget], area="right", name="Scene Selector")
 
     # Function to create image layer from a scene selected in the list widget
