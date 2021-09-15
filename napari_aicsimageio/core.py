@@ -100,7 +100,6 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> None:
         viewer.add_image(data, name=scene_text, metadata=meta, scale=meta["scale"])
 
     list_widget.currentItemChanged.connect(open_scene)
-    return None
 
 
 # Function to get Metadata to provide with data
@@ -110,12 +109,15 @@ def _get_meta(data, img):
         # Construct basic metadata
         meta["name"] = data.coords[DimensionNames.Channel].data.tolist()
         meta["channel_axis"] = data.dims.index(DimensionNames.Channel)
+
     # Not multi-channel, use current scene as image name
     else:
         meta["name"] = img.reader.current_scene
+
     # Handle samples / RGB
     if DimensionNames.Samples in img.reader.dims.order:
         meta["rgb"] = True
+
     # Handle scales
     scale: List[float] = []
     for dim in img.reader.dims.order:
@@ -127,9 +129,11 @@ def _get_meta(data, img):
             scale_val = getattr(img.physical_pixel_sizes, dim)
             if scale_val is not None:
                 scale.append(scale_val)
+
     # Apply scales
     if len(scale) > 0:
         meta["scale"] = tuple(scale)
+
     # Apply all other metadata
     meta["metadata"] = {"ome_types": img.metadata}
 
