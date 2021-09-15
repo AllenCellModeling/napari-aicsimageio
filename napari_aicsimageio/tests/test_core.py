@@ -94,3 +94,52 @@ def test_reader(
         # Check meta
         meta.pop("metadata", None)
         assert meta == expected_meta  # type: ignore
+
+
+SINGLESCENE_FILE = "s_1_t_1_c_1_z_1.czi"
+MULTISCENE_FILE = "s_3_t_1_c_3_z_5.czi"
+
+
+@pytest.mark.parametrize(
+    "in_memory, expected_dtype",
+    [
+        (True, np.ndarray),
+        (False, da.core.Array),
+    ],
+)
+@pytest.mark.parametrize(
+    "filename, nr_widgets, expected_shape",
+    [
+        (SINGLESCENE_FILE, 0, (325, 475)),
+        (MULTISCENE_FILE, 1, (3, 5, 325, 475)),
+    ],
+)
+def test_for_multiscene_widget(
+    make_napari_viewer,
+    resources_dir: Path,
+    filename: str,
+    in_memory: bool,
+    nr_widgets: int,
+    expected_dtype: type,
+    expected_shape: Tuple[int, ...],
+):
+    # Make a viewer
+    viewer = make_napari_viewer()
+    assert len(viewer.layers) == 0
+    assert len(viewer.window._dock_widgets) == 0
+
+    # Resolve filename to filepath
+    if isinstance(filename, str):
+        path = str(resources_dir / filename)
+
+    # Get reader
+    reader = core.get_reader(path, in_memory)
+
+    # Call reader on path
+    reader(path)
+
+    # Check for list widget
+    assert len(viewer.window._dock_widgets) == nr_widgets
+
+    if len(viewer.window._dock_widgets) > 0:
+        assert list(viewer.window._dock_widgets.keys())[0] == "Scene Selector"
