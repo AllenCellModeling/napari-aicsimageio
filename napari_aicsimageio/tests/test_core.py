@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from pathlib import Path
-from typing import Any, Dict, Tuple
+from typing import Any, Callable, Dict, Tuple
 
 import dask.array as da
+import napari
 import numpy as np
 import pytest
 
@@ -115,7 +116,7 @@ MULTISCENE_FILE = "s_3_t_1_c_3_z_5.czi"
     ],
 )
 def test_for_multiscene_widget(
-    make_napari_viewer,
+    make_napari_viewer: Callable[..., napari.Viewer],
     resources_dir: Path,
     filename: str,
     in_memory: bool,
@@ -135,19 +136,20 @@ def test_for_multiscene_widget(
     # Get reader
     reader = core.get_reader(path, in_memory)
 
-    # Call reader on path
-    reader(path)
+    if reader is not None:
+        # Call reader on path
+        reader(path)
 
-    # Check for list widget
-    assert len(viewer.window._dock_widgets) == nr_widgets
+        # Check for list widget
+        assert len(viewer.window._dock_widgets) == nr_widgets
 
-    if len(viewer.window._dock_widgets) != 0:
-        assert list(viewer.window._dock_widgets.keys())[0] == "Scene Selector"
-        viewer.window._dock_widgets["Scene Selector"].widget().setCurrentRow(1)
-        data = viewer.layers[0].data
-        assert isinstance(data.data, expected_dtype)  # type: ignore
-        assert data.shape == expected_shape  # type: ignore
-    else:
-        data, meta, _ = reader(path)[0]
-        assert isinstance(data, expected_dtype)  # type: ignore
-        assert data.shape == expected_shape  # type: ignore
+        if len(viewer.window._dock_widgets) != 0:
+            assert list(viewer.window._dock_widgets.keys())[0] == "Scene Selector"
+            viewer.window._dock_widgets["Scene Selector"].widget().setCurrentRow(1)
+            data = viewer.layers[0].data
+            assert isinstance(data.data, expected_dtype)  # type: ignore
+            assert data.shape == expected_shape  # type: ignore
+        else:
+            data, meta, _ = reader(path)[0]
+            assert isinstance(data, expected_dtype)  # type: ignore
+            assert data.shape == expected_shape  # type: ignore

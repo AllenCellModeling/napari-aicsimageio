@@ -2,21 +2,14 @@
 # -*- coding: utf-8 -*-
 
 from functools import partial
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional
 
 import napari
+from napari.types import LayerData, ReaderFunction, PathLike
 import xarray as xr
-from aicsimageio import AICSImage, exceptions, types
+from aicsimageio import AICSImage, exceptions
 from aicsimageio.dimensions import DimensionNames
-from qtpy.QtWidgets import QListWidget
-
-###############################################################################
-
-LayerData = Union[Tuple[types.ArrayLike, Dict[str, Any], str]]
-PathLike = Union[str, List[str]]
-ReaderFunction = Callable[[PathLike], List[LayerData]]
-
-###############################################################################
+from qtpy.QtWidgets import QListWidget, QListWidgetItem
 
 
 def _get_full_image_data(img: AICSImage, in_memory: bool) -> Optional[xr.DataArray]:
@@ -54,7 +47,7 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> None:
     viewer.window.add_dock_widget(list_widget, area="right", name="Scene Selector")
 
     # Function to create image layer from a scene selected in the list widget
-    def open_scene(item) -> None:
+    def open_scene(item: QListWidgetItem) -> None:
         scene_text = item.text()
 
         # Use scene indexes to cover for duplicate names
@@ -85,7 +78,7 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> None:
 
 
 # Function to get Metadata to provide with data
-def _get_meta(data, img) -> Dict[str, Any]:
+def _get_meta(data: xr.DataArray, img: AICSImage) -> Dict[str, Any]:
     meta = {}
     if DimensionNames.Channel in data.dims:
 
