@@ -5,10 +5,10 @@ from functools import partial
 from typing import Any, Dict, List, Optional
 
 import napari
-from napari.types import LayerData, ReaderFunction, PathLike
 import xarray as xr
 from aicsimageio import AICSImage, exceptions
 from aicsimageio.dimensions import DimensionNames
+from napari.types import LayerData, PathLike, ReaderFunction
 from qtpy.QtWidgets import QListWidget, QListWidgetItem
 
 
