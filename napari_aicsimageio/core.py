@@ -85,7 +85,7 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> None:
 
 
 # Function to get Metadata to provide with data
-def _get_meta(data, img) -> None:
+def _get_meta(data, img) -> Dict[str, Any]:
     meta = {}
     if DimensionNames.Channel in data.dims:
 
