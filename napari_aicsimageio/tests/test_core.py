@@ -145,9 +145,9 @@ def test_for_multiscene_widget(
         assert list(viewer.window._dock_widgets.keys())[0] == "Scene Selector"
         viewer.window._dock_widgets["Scene Selector"].widget().setCurrentRow(1)
         data = viewer.layers[0].data
-        assert isinstance(data.data, expected_dtype)
-        assert data.shape == expected_shape
+        assert isinstance(data.data, expected_dtype)  # type: ignore
+        assert data.shape == expected_shape  # type: ignore
     else:
         data, meta, _ = reader(path)[0]
-        assert isinstance(data, expected_dtype)
-        assert data.shape == expected_shape
+        assert isinstance(data, expected_dtype)  # type: ignore
+        assert data.shape == expected_shape  # type: ignore

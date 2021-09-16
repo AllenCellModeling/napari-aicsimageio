@@ -54,7 +54,7 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> None:
     viewer.window.add_dock_widget(list_widget, area="right", name="Scene Selector")
 
     # Function to create image layer from a scene selected in the list widget
-    def open_scene(item):
+    def open_scene(item) -> None:
         scene_text = item.text()
 
         # Use scene indexes to cover for duplicate names
@@ -85,7 +85,7 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> None:
 
 
 # Function to get Metadata to provide with data
-def _get_meta(data, img):
+def _get_meta(data, img) -> None:
     meta = {}
     if DimensionNames.Channel in data.dims:
 
