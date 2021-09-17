@@ -13,6 +13,7 @@ setup_requirements = [
 ]
 
 test_requirements = [
+    "aicsimageio[base-imageio,lif]",
     "black>=19.10b0",
     "codecov>=2.1.4",
     "docutils>=0.10,<0.16",
@@ -40,7 +41,7 @@ dev_requirements = [
 ]
 
 requirements = [
-    "aicsimageio[all]~=4.0.2",
+    "aicsimageio~=4.0.2",
     "fsspec[http]",  # no version pin, we pull from aicsimageio
     "napari~=0.4.10",
     "napari_plugin_engine~=0.1.4",
