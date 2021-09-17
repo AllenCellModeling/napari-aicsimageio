@@ -16,7 +16,6 @@ PNG_FILE = "example.png"
 GIF_FILE = "example.gif"
 OME_TIFF = "pipeline-4.ome.tiff"
 LIF_FILE = "tiled.lif"
-CZI_FILE = "variable_scene_shape_first_scene_pyramid.czi"
 
 ###############################################################################
 
@@ -33,15 +32,6 @@ CZI_FILE = "variable_scene_shape_first_scene_pyramid.czi"
     [
         (PNG_FILE, (800, 537, 4), {"name": "Image:0", "rgb": True}),
         (GIF_FILE, (72, 268, 268, 4), {"name": "Image:0", "rgb": True}),
-        (
-            CZI_FILE,
-            (3, 6183, 7705),
-            {
-                "name": ["EGFP", "mCher", "PGC"],
-                "channel_axis": 0,
-                "scale": (9.08210704883533, 9.08210704883533),
-            },
-        ),
         (
             OME_TIFF,
             (1, 4, 65, 600, 900),
