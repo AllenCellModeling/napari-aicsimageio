@@ -80,7 +80,7 @@ def download_test_resources(args: Args):
 
         # Get quilt package
         package = Package.browse(
-            "aicsimageio/test_resources",
+            "napari_aicsimageio/test_resources",
             "s3://aics-modeling-packages-test-resources",
             top_hash=top_hash,
         )
@@ -88,7 +88,7 @@ def download_test_resources(args: Args):
         # Download
         package["resources"].fetch(resources_dir)
 
-        log.info(f"Completed package download.")
+        log.info("Completed package download.")
 
     # Catch any exception
     except Exception as e:
