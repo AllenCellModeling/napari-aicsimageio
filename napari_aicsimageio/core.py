@@ -2,14 +2,16 @@
 # -*- coding: utf-8 -*-
 
 from functools import partial
-from typing import Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 import napari
 import xarray as xr
 from aicsimageio import AICSImage, exceptions
 from aicsimageio.dimensions import DimensionNames
-from napari.types import LayerData, PathLike, ReaderFunction
 from qtpy.QtWidgets import QListWidget, QListWidgetItem
+
+if TYPE_CHECKING:
+    from napari.types import LayerData, PathLike, ReaderFunction
 
 
 def _get_full_image_data(img: AICSImage, in_memory: bool) -> Optional[xr.DataArray]:
@@ -117,8 +119,8 @@ def _get_meta(data: xr.DataArray, img: AICSImage) -> Dict[str, Any]:
 
 
 def reader_function(
-    path: PathLike, in_memory: bool, scene_name: Optional[str] = None
-) -> Optional[List[LayerData]]:
+    path: "PathLike", in_memory: bool, scene_name: Optional[str] = None
+) -> Optional[List["LayerData"]]:
     """
     Given a single path return a list of LayerData tuples.
     """
@@ -157,7 +159,7 @@ def reader_function(
             return [(data.data, meta, "image")]
 
 
-def get_reader(path: PathLike, in_memory: bool) -> Optional[ReaderFunction]:
+def get_reader(path: "PathLike", in_memory: bool) -> Optional["ReaderFunction"]:
     """
     Given a single path or list of paths, return the appropriate aicsimageio reader.
     """
