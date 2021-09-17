@@ -8,25 +8,35 @@ AICSImageIO bindings for napari
 ---
 
 ## Features
-* Supports reading metadata and imaging data for:
-    * `CZI`
-    * `OME-TIFF`
-    * `TIFF`
-    * Any formats supported by [aicsimageio](https://github.com/AllenCellModeling/aicsimageio)
-    * Any additional format supported by [imageio](https://github.com/imageio/imageio)
+
+-   Supports reading metadata and imaging data for:
+    -   `OME-TIFF`
+    -   `TIFF`
+    -   Any formats supported by [aicsimageio](https://github.com/AllenCellModeling/aicsimageio)
+        -   `CZI` -- requires additional installation (`pip install aicsimageio[czi]`)
+        -   `LIF` -- requires additional installation (`pip install aicsimageio[lif]`)
+        -   Any formats supported by
+            [imageio](https://github.com/imageio/imageio) (`PNG`, `GIF`, etc.)
+            -- requires additional installation (`pip install aicsimageio[base-imageio]`)
 
 ## Installation
+
 **Stable Release:** `pip install napari-aicsimageio`<br>
 **Development Head:** `pip install git+https://github.com/AllenCellModeling/napari-aicsimageio.git`
+
+See
+[aicsimageio Installation documentation](https://github.com/AllenCellModeling/aicsimageio#installation)
+for more details on installing support for additional file formats.
 
 ### Plugin Variants
 
 ![screenshot of plugin sorter showing that napari-aicsimageio-in-memory should be placed above napari-aicsimageio-out-of-memory](https://raw.githubusercontent.com/AllenCellModeling/napari-aicsimageio/main/images/plugin-sorter.png)
 
 There are two variants of this plugin that are added during installation:
-* `aicsimageio-in-memory`, which reads an image fully into memory
-* `aicsimageio-out-of-memory`, which delays reading ZYX chunks until required.
-This allows for incredible large files to be read and displayed.
+
+-   `aicsimageio-in-memory`, which reads an image fully into memory
+-   `aicsimageio-out-of-memory`, which delays reading ZYX chunks until required.
+    This allows for incredible large files to be read and displayed.
 
 ## Examples of Features
 
@@ -56,6 +66,7 @@ will return the reconstructed image:
 ![screenshot of a reconstructed / restitched mosaic tile LIF](https://raw.githubusercontent.com/AllenCellModeling/napari-aicsimageio/main/images/tiled-lif.png)
 
 ## Development
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) for information related to developing the code.
 
 For additional file format support, contributed directly to
