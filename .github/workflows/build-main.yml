@@ -43,8 +43,8 @@ jobs:
         python scripts/download_test_resources.py
     - name: Test with pytest
       uses: GabrielBB/xvfb-action@v1
-      run: |
-        pytest --cov-report xml --cov=napari_aicsimageio napari_aicsimageio/tests/
+      with:
+        run: pytest --cov-report xml --cov=napari_aicsimageio napari_aicsimageio/tests/
     - name: Upload codecov
       uses: codecov/codecov-action@v1
 
