@@ -2,25 +2,35 @@
 # -*- coding: utf-8 -*-
 
 from functools import partial
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 import napari
 import xarray as xr
 from aicsimageio import AICSImage, exceptions
 from aicsimageio.dimensions import DimensionNames
-from qtpy.QtWidgets import QListWidget, QListWidgetItem
+from qtpy.QtWidgets import QCheckBox, QListWidget, QListWidgetItem
 
 if TYPE_CHECKING:
     from napari.types import LayerData, PathLike, ReaderFunction
 
+###############################################################################
 
-def _get_full_image_data(img: AICSImage, in_memory: bool) -> Optional[xr.DataArray]:
+SCENE_CHECKBOX_MANAGER = "AICSImageIO Scene Management"
+
+###############################################################################
+
+
+def _get_full_image_data(
+    img: AICSImage,
+    in_memory: bool,
+) -> xr.DataArray:
     if DimensionNames.MosaicTile in img.reader.dims.order:
         try:
             if in_memory:
                 return img.reader.mosaic_xarray_data
-            else:
-                return img.reader.mosaic_xarray_dask_data
+
+            return img.reader.mosaic_xarray_dask_data
 
         # Catch reader does not support tile stitching
         except NotImplementedError:
@@ -29,24 +39,48 @@ def _get_full_image_data(img: AICSImage, in_memory: bool) -> Optional[xr.DataArr
                 "not yet supported for this file format reader."
             )
 
-    else:
-        if in_memory:
-            return img.reader.xarray_data
-        else:
-            return img.reader.xarray_dask_data
+    if in_memory:
+        return img.reader.xarray_data
 
-    return None
+    return img.reader.xarray_dask_data
+
+
+def _scene_clear_checked() -> bool:
+    # Get napari viewer from current process
+    viewer = napari.current_viewer()
+
+    # Get the checkbox widget
+    checkbox_widget = viewer.window._dock_widgets[SCENE_CHECKBOX_MANAGER]
+    return checkbox_widget.widget().isChecked()
 
 
 # Function to handle multi-scene files.
-def _get_scenes(img: AICSImage, in_memory: bool) -> None:
+def _get_scenes(path: "PathLike", img: AICSImage, in_memory: bool) -> None:
+    # Get napari viewer from current process
+    viewer = napari.current_viewer()
+
+    # Add a checkbox widget if not present
+    if SCENE_CHECKBOX_MANAGER not in viewer.window._dock_widgets:
+        # Create a checkbox widget to set "Clear On Scene Select" or not
+        checkbox_widget = QCheckBox("Always Clear Layers on Scene Selection")
+        checkbox_widget.setChecked(True)
+        viewer.window.add_dock_widget(
+            checkbox_widget,
+            area="right",
+            name=SCENE_CHECKBOX_MANAGER,
+        )
 
     # Create the list widget and populate with the ids & scenes in the file
     list_widget = QListWidget()
     for i, scene in enumerate(img.scenes):
         list_widget.addItem(f"{i} :: {scene}")
-    viewer = napari.current_viewer()
-    viewer.window.add_dock_widget(list_widget, area="right", name="Scene Selector")
+
+    # Add this files scenes widget to viewer
+    viewer.window.add_dock_widget(
+        list_widget,
+        area="right",
+        name=f"{Path(path).name} :: Scenes",
+    )
 
     # Function to create image layer from a scene selected in the list widget
     def open_scene(item: QListWidgetItem) -> None:
@@ -54,27 +88,19 @@ def _get_scenes(img: AICSImage, in_memory: bool) -> None:
 
         # Use scene indexes to cover for duplicate names
         scene_index = int(scene_text.split(" :: ")[0])
-        img.set_scene(scene_index)
-        if DimensionNames.MosaicTile in img.reader.dims.order:
-            try:
-                if in_memory:
-                    data = img.reader.mosaic_xarray_data
-                else:
-                    data = img.reader.mosaic_xarray_dask_data
 
-            # Catch reader does not support tile stitching
-            except NotImplementedError:
-                print(
-                    "AICSImageIO: Mosaic tile stitching "
-                    "not yet supported for this file format reader."
-                )
-        else:
-            if in_memory:
-                data = img.reader.xarray_data
-            else:
-                data = img.reader.xarray_dask_data
+        # Update scene on image and get data
+        img.set_scene(scene_index)
+        data = _get_full_image_data(img=img, in_memory=in_memory)
+
+        # Get metadata and add to image
         meta = _get_meta(data, img)
-        viewer.add_image(data, name=scene_text, metadata=meta, scale=meta["scale"])
+
+        # Optionally clear layers
+        if _scene_clear_checked():
+            viewer.layers.clear()
+
+        viewer.add_image(data, **meta)
 
     list_widget.currentItemChanged.connect(open_scene)
 
@@ -118,9 +144,7 @@ def _get_meta(data: xr.DataArray, img: AICSImage) -> Dict[str, Any]:
     return meta
 
 
-def reader_function(
-    path: "PathLike", in_memory: bool, scene_name: Optional[str] = None
-) -> Optional[List["LayerData"]]:
+def reader_function(path: "PathLike", in_memory: bool) -> Optional[List["LayerData"]]:
     """
     Given a single path return a list of LayerData tuples.
     """
@@ -143,20 +167,15 @@ def reader_function(
             f"Select a scene from the list widget. There may be dragons!"
         )
         # Launch the list widget
-        _get_scenes(img, in_memory=in_memory)
+        _get_scenes(path=path, img=img, in_memory=in_memory)
 
         # Return an empty LayerData list; ImgLayers will be handled via the widget.
         # HT Jonas Windhager
         return [(None,)]
     else:
         data = _get_full_image_data(img, in_memory=in_memory)
-
-        # Catch None data
-        if data is None:
-            return None
-        else:
-            meta = _get_meta(data, img)
-            return [(data.data, meta, "image")]
+        meta = _get_meta(data, img)
+        return [(data.data, meta, "image")]
 
 
 def get_reader(path: "PathLike", in_memory: bool) -> Optional["ReaderFunction"]:
@@ -176,7 +195,7 @@ def get_reader(path: "PathLike", in_memory: bool) -> Optional["ReaderFunction"]:
 
         # The above line didn't error so we know we have a supported reader
         # Return a partial function with in_memory determined
-        return partial(reader_function, in_memory=in_memory)  # type: ignore
+        return partial(reader_function, in_memory=in_memory)
 
     # No supported reader, return None
     except exceptions.UnsupportedFileFormatError:
