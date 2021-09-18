@@ -113,7 +113,7 @@ MULTISCENE_FILE = "s_3_t_1_c_3_z_5.czi"
     "filename, expected_shape",
     [
         (SINGLESCENE_FILE, (1, 325, 475)),
-        (MULTISCENE_FILE, (5, 325, 475)),  # we are checking the single channel
+        (MULTISCENE_FILE, (5, 3, 325, 475)),
     ],
 )
 def test_for_multiscene_widget(
