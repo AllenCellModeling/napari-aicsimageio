@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from pathlib import Path
-from typing import Any, Callable, Dict, Tuple
+from typing import Any, Callable, Dict, Tuple, Type
 
 import dask.array as da
 import napari
 import numpy as np
 import pytest
+from napari.types import ArrayLike
 
 from napari_aicsimageio import core
 
@@ -109,10 +110,10 @@ MULTISCENE_FILE = "s_3_t_1_c_3_z_5.czi"
     ],
 )
 @pytest.mark.parametrize(
-    "filename, nr_widgets, expected_shape",
+    "filename, expected_shape",
     [
-        (SINGLESCENE_FILE, 0, (1, 325, 475)),
-        (MULTISCENE_FILE, 1, (3, 5, 325, 475)),
+        (SINGLESCENE_FILE, (1, 325, 475)),
+        (MULTISCENE_FILE, (3, 5, 325, 475)),
     ],
 )
 def test_for_multiscene_widget(
@@ -120,8 +121,7 @@ def test_for_multiscene_widget(
     resources_dir: Path,
     filename: str,
     in_memory: bool,
-    nr_widgets: int,
-    expected_dtype: type,
+    expected_dtype: Type[ArrayLike],
     expected_shape: Tuple[int, ...],
 ) -> None:
     # Make a viewer
@@ -140,16 +140,15 @@ def test_for_multiscene_widget(
         # Call reader on path
         reader(path)
 
-        # Check for list widget
-        assert len(viewer.window._dock_widgets) == nr_widgets
-
         if len(viewer.window._dock_widgets) != 0:
-            assert list(viewer.window._dock_widgets.keys())[0] == "Scene Selector"
-            viewer.window._dock_widgets["Scene Selector"].widget().setCurrentRow(1)
+            assert list(viewer.window._dock_widgets.keys())[0]
+            viewer.window._dock_widgets[f"{filename} :: Scenes"].widget().setCurrentRow(
+                1
+            )
             data = viewer.layers[0].data
-            assert isinstance(data.data, expected_dtype)  # type: ignore
-            assert data.shape == expected_shape  # type: ignore
+            assert isinstance(data.data, expected_dtype)
+            assert data.shape == expected_shape
         else:
-            data, meta, _ = reader(path)[0]
-            assert isinstance(data, expected_dtype)  # type: ignore
-            assert data.shape == expected_shape  # type: ignore
+            data, _, _ = reader(path)[0]
+            assert isinstance(data, expected_dtype)
+            assert data.shape == expected_shape
