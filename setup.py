@@ -43,7 +43,7 @@ dev_requirements = [
 requirements = [
     "aicsimageio[all]~=4.1.0",
     "fsspec[http]",  # no version pin, we pull from aicsimageio
-    "napari[pyqt5,pyside]~=0.4.11",
+    "napari[all]~=0.4.11",
     "napari_plugin_engine~=0.1.4",
 ]
 
