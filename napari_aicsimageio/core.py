@@ -172,7 +172,7 @@ def _get_scenes(path: "PathLike", img: AICSImage, in_memory: bool) -> None:
 
         # Optionally remove channel axis
         if not _widget_is_checked(UNPACK_CHANNELS_TO_LAYERS):
-            meta["name"] = scene_text.split(SCENE_LABEL_DELIMITER)[1]
+            meta["name"] = scene_text
             meta.pop("channel_axis", None)
 
         viewer.add_image(data, **meta)
