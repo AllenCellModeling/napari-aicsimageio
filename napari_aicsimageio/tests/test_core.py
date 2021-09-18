@@ -110,17 +110,16 @@ MULTISCENE_FILE = "s_3_t_1_c_3_z_5.czi"
     ],
 )
 @pytest.mark.parametrize(
-    "filename, n_layers, expected_shape",
+    "filename, expected_shape",
     [
-        (SINGLESCENE_FILE, 1, (1, 325, 475)),
-        (MULTISCENE_FILE, 3, (5, 325, 475)),  # we are checking the single channel
+        (SINGLESCENE_FILE, (1, 325, 475)),
+        (MULTISCENE_FILE, (5, 325, 475)),  # we are checking the single channel
     ],
 )
 def test_for_multiscene_widget(
     make_napari_viewer: Callable[..., napari.Viewer],
     resources_dir: Path,
     filename: str,
-    n_layers: int,
     in_memory: bool,
     expected_dtype: Type[ArrayLike],
     expected_shape: Tuple[int, ...],
@@ -140,8 +139,6 @@ def test_for_multiscene_widget(
     if reader is not None:
         # Call reader on path
         reader(path)
-
-        assert len(viewer.layers) == n_layers
 
         if len(viewer.window._dock_widgets) != 0:
             viewer.window._dock_widgets[f"{filename} :: Scenes"].widget().setCurrentRow(
