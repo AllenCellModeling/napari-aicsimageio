@@ -61,7 +61,8 @@ def _get_meta(data: xr.DataArray, img: AICSImage) -> Dict[str, Any]:
     if DimensionNames.Channel in data.dims:
         # Construct basic metadata
         channels_with_scene_index = [
-            f"{img.current_scene_index}{SCENE_LABEL_DELIMITER}{channel_name}"
+            f"{img.current_scene_index}{SCENE_LABEL_DELIMITER}"
+            f"{img.current_scene}{SCENE_LABEL_DELIMITER}{channel_name}"
             for channel_name in data.coords[DimensionNames.Channel].data.tolist()
         ]
         meta["name"] = channels_with_scene_index

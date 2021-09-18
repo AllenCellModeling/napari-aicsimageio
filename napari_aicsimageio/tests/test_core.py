@@ -39,7 +39,11 @@ CZI_FILE = "variable_scene_shape_first_scene_pyramid.czi"
             CZI_FILE,
             (3, 6183, 7705),
             {
-                "name": ["EGFP", "mCher", "PGC"],
+                "name": [
+                    "0 :: A1-A1 :: EGFP",
+                    "0 :: A1-A1 :: mCher",
+                    "0 :: A1-A1 :: PGC",
+                ],
                 "channel_axis": 0,
                 "scale": (9.08210704883533, 9.08210704883533),
             },
@@ -48,7 +52,12 @@ CZI_FILE = "variable_scene_shape_first_scene_pyramid.czi"
             OME_TIFF,
             (1, 4, 65, 600, 900),
             {
-                "name": ["Bright_2", "EGFP", "CMDRP", "H3342"],
+                "name": [
+                    "0 :: Image:0 :: Bright_2",
+                    "0 :: Image:0 :: EGFP",
+                    "0 :: Image:0 :: CMDRP",
+                    "0 :: Image:0 :: H3342",
+                ],
                 "channel_axis": 1,
                 "scale": (0.29, 0.10833333333333332, 0.10833333333333332),
             },
@@ -57,7 +66,12 @@ CZI_FILE = "variable_scene_shape_first_scene_pyramid.czi"
             LIF_FILE,
             (1, 4, 1, 5622, 7666),
             {
-                "name": ["Gray", "Red", "Green", "Cyan"],
+                "name": [
+                    "0 :: TileScan_002 :: Gray",
+                    "0 :: TileScan_002 :: Red",
+                    "0 :: TileScan_002 :: Green",
+                    "0 :: TileScan_002 :: Cyan",
+                ],
                 "channel_axis": 1,
                 "scale": (0.20061311154598827, 0.20061311154598827),
             },
