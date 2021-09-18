@@ -9,14 +9,24 @@ import napari
 import xarray as xr
 from aicsimageio import AICSImage, exceptions
 from aicsimageio.dimensions import DimensionNames
-from qtpy.QtWidgets import QCheckBox, QListWidget, QListWidgetItem
+from qtpy.QtWidgets import (
+    QCheckBox,
+    QGroupBox,
+    QListWidget,
+    QListWidgetItem,
+    QVBoxLayout,
+)
 
 if TYPE_CHECKING:
     from napari.types import LayerData, PathLike, ReaderFunction
 
 ###############################################################################
 
-SCENE_CHECKBOX_MANAGER = "AICSImageIO Scene Management"
+AICSIMAGEIO_CHOICES = "AICSImageIO Scene Management"
+CLEAR_LAYERS_ON_SELECT = "Clear All Layers on New Scene Selection"
+UNPACK_CHANNELS_TO_LAYERS = "Unpack Channels as Layers"
+
+SCENE_LABEL_DELIMITER = " :: "
 
 ###############################################################################
 
@@ -43,66 +53,6 @@ def _get_full_image_data(
         return img.reader.xarray_data
 
     return img.reader.xarray_dask_data
-
-
-def _scene_clear_checked() -> bool:
-    # Get napari viewer from current process
-    viewer = napari.current_viewer()
-
-    # Get the checkbox widget
-    checkbox_widget = viewer.window._dock_widgets[SCENE_CHECKBOX_MANAGER]
-    return checkbox_widget.widget().isChecked()
-
-
-# Function to handle multi-scene files.
-def _get_scenes(path: "PathLike", img: AICSImage, in_memory: bool) -> None:
-    # Get napari viewer from current process
-    viewer = napari.current_viewer()
-
-    # Add a checkbox widget if not present
-    if SCENE_CHECKBOX_MANAGER not in viewer.window._dock_widgets:
-        # Create a checkbox widget to set "Clear On Scene Select" or not
-        checkbox_widget = QCheckBox("Always Clear Layers on Scene Selection")
-        checkbox_widget.setChecked(True)
-        viewer.window.add_dock_widget(
-            checkbox_widget,
-            area="right",
-            name=SCENE_CHECKBOX_MANAGER,
-        )
-
-    # Create the list widget and populate with the ids & scenes in the file
-    list_widget = QListWidget()
-    for i, scene in enumerate(img.scenes):
-        list_widget.addItem(f"{i} :: {scene}")
-
-    # Add this files scenes widget to viewer
-    viewer.window.add_dock_widget(
-        list_widget,
-        area="right",
-        name=f"{Path(path).name} :: Scenes",
-    )
-
-    # Function to create image layer from a scene selected in the list widget
-    def open_scene(item: QListWidgetItem) -> None:
-        scene_text = item.text()
-
-        # Use scene indexes to cover for duplicate names
-        scene_index = int(scene_text.split(" :: ")[0])
-
-        # Update scene on image and get data
-        img.set_scene(scene_index)
-        data = _get_full_image_data(img=img, in_memory=in_memory)
-
-        # Get metadata and add to image
-        meta = _get_meta(data, img)
-
-        # Optionally clear layers
-        if _scene_clear_checked():
-            viewer.layers.clear()
-
-        viewer.add_image(data, **meta)
-
-    list_widget.currentItemChanged.connect(open_scene)
 
 
 # Function to get Metadata to provide with data
@@ -142,6 +92,89 @@ def _get_meta(data: xr.DataArray, img: AICSImage) -> Dict[str, Any]:
     meta["metadata"] = {"ome_types": img.metadata}
 
     return meta
+
+
+def _widget_is_checked(widget_name: str) -> bool:
+    # Get napari viewer from current process
+    viewer = napari.current_viewer()
+
+    # Get scene management widget
+    scene_manager_choices_widget = viewer.window._dock_widgets[AICSIMAGEIO_CHOICES]
+    for child in scene_manager_choices_widget.widget().children():
+        if isinstance(child, QCheckBox):
+            if child.text() == widget_name:
+                return child.isChecked()
+
+    return False
+
+
+# Function to handle multi-scene files.
+def _get_scenes(path: "PathLike", img: AICSImage, in_memory: bool) -> None:
+    # Get napari viewer from current process
+    viewer = napari.current_viewer()
+
+    # Add a checkbox widget if not present
+    if AICSIMAGEIO_CHOICES not in viewer.window._dock_widgets:
+        # Create a checkbox widget to set "Clear On Scene Select" or not
+        scene_clear_checkbox = QCheckBox(CLEAR_LAYERS_ON_SELECT)
+        scene_clear_checkbox.setChecked(False)
+
+        # Create a checkbox widget to set "Unpack Channels" or not
+        channel_unpack_checkbox = QCheckBox(UNPACK_CHANNELS_TO_LAYERS)
+        channel_unpack_checkbox.setChecked(False)
+
+        # Add all scene management state to a single box
+        scene_manager_group = QGroupBox()
+        scene_manager_group_layout = QVBoxLayout()
+        scene_manager_group_layout.addWidget(scene_clear_checkbox)
+        scene_manager_group_layout.addWidget(channel_unpack_checkbox)
+        scene_manager_group.setLayout(scene_manager_group_layout)
+        scene_manager_group.setFixedHeight(100)
+
+        viewer.window.add_dock_widget(
+            scene_manager_group,
+            area="right",
+            name=AICSIMAGEIO_CHOICES,
+        )
+
+    # Create the list widget and populate with the ids & scenes in the file
+    list_widget = QListWidget()
+    for i, scene in enumerate(img.scenes):
+        list_widget.addItem(f"{i}{SCENE_LABEL_DELIMITER}{scene}")
+
+    # Add this files scenes widget to viewer
+    viewer.window.add_dock_widget(
+        list_widget,
+        area="right",
+        name=f"{Path(path).name}{SCENE_LABEL_DELIMITER}Scenes",
+    )
+
+    # Function to create image layer from a scene selected in the list widget
+    def open_scene(item: QListWidgetItem) -> None:
+        scene_text = item.text()
+
+        # Use scene indexes to cover for duplicate names
+        scene_index = int(scene_text.split(SCENE_LABEL_DELIMITER)[0])
+
+        # Update scene on image and get data
+        img.set_scene(scene_index)
+        data = _get_full_image_data(img=img, in_memory=in_memory)
+
+        # Get metadata and add to image
+        meta = _get_meta(data, img)
+
+        # Optionally clear layers
+        if _widget_is_checked(CLEAR_LAYERS_ON_SELECT):
+            viewer.layers.clear()
+
+        # Optionally remove channel axis
+        if not _widget_is_checked(UNPACK_CHANNELS_TO_LAYERS):
+            meta["name"] = scene_text.split(SCENE_LABEL_DELIMITER)[1]
+            meta.pop("channel_axis", None)
+
+        viewer.add_image(data, **meta)
+
+    list_widget.currentItemChanged.connect(open_scene)
 
 
 def reader_function(path: "PathLike", in_memory: bool) -> Optional[List["LayerData"]]:
