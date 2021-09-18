@@ -57,11 +57,14 @@ def _get_full_image_data(
 
 # Function to get Metadata to provide with data
 def _get_meta(data: xr.DataArray, img: AICSImage) -> Dict[str, Any]:
-    meta = {}
+    meta: Dict[str, Any] = {}
     if DimensionNames.Channel in data.dims:
-
         # Construct basic metadata
-        meta["name"] = data.coords[DimensionNames.Channel].data.tolist()
+        channels_with_scene_index = [
+            f"{img.current_scene_index}{SCENE_LABEL_DELIMITER}{channel_name}"
+            for channel_name in data.coords[DimensionNames.Channel].data.tolist()
+        ]
+        meta["name"] = channels_with_scene_index
         meta["channel_axis"] = data.dims.index(DimensionNames.Channel)
 
     # Not multi-channel, use current scene as image name
