@@ -4,6 +4,7 @@ Contributions are welcome, and they are greatly appreciated! Every little bit
 helps, and credit will always be given.
 
 ## Get Started!
+
 Ready to contribute? Here's how to set up `napari-aicsimageio` for local development.
 
 1. Fork the `napari-aicsimageio` repo on GitHub.
@@ -21,6 +22,13 @@ Ready to contribute? Here's how to set up `napari-aicsimageio` for local develop
     pip install -e .[dev]
     ```
 
+    If you are working on a Linux based machine you may need to additionally install
+    some QT setup libraries
+
+    ```bash
+    sudo apt-get install -y libdbus-1-3 libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0 xvfb
+    ```
+
 4. Create a branch for local development:
 
     ```bash
@@ -32,9 +40,9 @@ Ready to contribute? Here's how to set up `napari-aicsimageio` for local develop
 
 5. Download test resources:
 
-   ```bash
-   python scripts/download_test_resources.py
-   ```
+    ```bash
+    python scripts/download_test_resources.py
+    ```
 
 6. When you're done making changes, check that your changes pass linting and
    tests, including testing other Python versions with make:
