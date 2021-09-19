@@ -20,11 +20,13 @@ test_requirements = [
     "flake8-debugger>=3.2.1",
     "isort>=5.7.0",
     "mypy>=0.800",
+    "napari[pyqt]",
     "psutil>=5.7.0",
     "pytest>=5.4.3",
-    "pytest-qt",
+    "pytest-qt~=4.0",
     "pytest-cov>=2.9.0",
     "pytest-raises>=0.11",
+    "pytest-xvfb~=2.0",
     "quilt3~=3.4.0",
 ]
 
@@ -43,7 +45,7 @@ dev_requirements = [
 requirements = [
     "aicsimageio[all]~=4.1",
     "fsspec[http]",  # no version pin, we pull from aicsimageio
-    "napari[all]~=0.4.11",
+    "napari~=0.4.11",
     "napari_plugin_engine~=0.1.4",
 ]
 
