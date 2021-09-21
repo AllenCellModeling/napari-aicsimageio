@@ -79,14 +79,13 @@ def download_test_resources(args: Args):
         log.info(f"Downloading test resources using top hash: {top_hash}")
 
         # Get quilt package
-        package = Package.browse(
+        Package.install(
             "aicsimageio/test_resources",
             "s3://aics-modeling-packages-test-resources",
+            dest=resources_dir,
             top_hash=top_hash,
+            path="resources",
         )
-
-        # Download
-        package["resources"].fetch(resources_dir)
 
         log.info(f"Completed package download.")
 
