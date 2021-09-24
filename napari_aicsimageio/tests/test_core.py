@@ -50,7 +50,7 @@ CZI_FILE = "variable_scene_shape_first_scene_pyramid.czi"
         ),
         (
             OME_TIFF,
-            (1, 4, 65, 600, 900),
+            (4, 65, 600, 900),
             {
                 "name": [
                     "0 :: Image:0 :: Bright_2",
@@ -58,13 +58,13 @@ CZI_FILE = "variable_scene_shape_first_scene_pyramid.czi"
                     "0 :: Image:0 :: CMDRP",
                     "0 :: Image:0 :: H3342",
                 ],
-                "channel_axis": 1,
+                "channel_axis": 0,
                 "scale": (0.29, 0.10833333333333332, 0.10833333333333332),
             },
         ),
         (
             LIF_FILE,
-            (1, 4, 1, 5622, 7666),
+            (4, 5622, 7666),
             {
                 "name": [
                     "0 :: TileScan_002 :: Gray",
@@ -72,7 +72,7 @@ CZI_FILE = "variable_scene_shape_first_scene_pyramid.czi"
                     "0 :: TileScan_002 :: Green",
                     "0 :: TileScan_002 :: Cyan",
                 ],
-                "channel_axis": 1,
+                "channel_axis": 0,
                 "scale": (0.20061311154598827, 0.20061311154598827),
             },
         ),
@@ -126,7 +126,7 @@ MULTISCENE_FILE = "s_3_t_1_c_3_z_5.czi"
 @pytest.mark.parametrize(
     "filename, expected_shape",
     [
-        (SINGLESCENE_FILE, (1, 325, 475)),
+        (SINGLESCENE_FILE, (325, 475)),
         (MULTISCENE_FILE, (3, 5, 325, 475)),
     ],
 )

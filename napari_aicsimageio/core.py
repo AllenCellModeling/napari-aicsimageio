@@ -38,9 +38,9 @@ def _get_full_image_data(
     if DimensionNames.MosaicTile in img.reader.dims.order:
         try:
             if in_memory:
-                return img.reader.mosaic_xarray_data
+                return img.reader.mosaic_xarray_data.squeeze()
 
-            return img.reader.mosaic_xarray_dask_data
+            return img.reader.mosaic_xarray_dask_data.squeeze()
 
         # Catch reader does not support tile stitching
         except NotImplementedError:
