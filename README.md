@@ -29,7 +29,7 @@ There are two variants of this plugin that are added during installation:
 
 -   `aicsimageio-in-memory`, which reads an image fully into memory
 -   `aicsimageio-out-of-memory`, which delays reading ZYX chunks until required.
-    This allows for incrediblly large files to be read and displayed.
+    This allows for incredibly large files to be read and displayed.
 
 ## Examples of Features
 
