@@ -43,11 +43,12 @@ dev_requirements = [
 ]
 
 requirements = [
-    "aicsimageio[all]>=4.4",
+    "aicsimageio[all]>=4.5",
     "fsspec[http]",  # no version pin, we pull from aicsimageio
     "napari>=0.4.11",
     "napari_plugin_engine>=0.1.4",
     # Formats not included by default with aicsimageio
+    "aicspylibczi>=3.0.5",
     "bioformats_jar",
     "readlif>=0.6.4",
 ]

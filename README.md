@@ -18,6 +18,7 @@ AICSImageIO bindings for napari
     -   `ND2`
     -   `DV`
     -   Any formats supported by [aicsimageio](https://github.com/AllenCellModeling/aicsimageio)
+    -   Any formats supported by [bioformats](https://github.com/tlambert03/bioformats_jar)
     -   Any additional format supported by [imageio](https://github.com/imageio/imageio)
 
 _While upstream `aicsimageio` is released under BSD-3 license, this plugin is released under GPLv3 license because it installs all format reader dependencies._
