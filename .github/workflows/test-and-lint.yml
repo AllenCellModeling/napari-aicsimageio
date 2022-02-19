@@ -26,7 +26,7 @@ jobs:
     # Install qt support libs
     - uses: tlambert03/setup-qt-libs@v1
 
-    strategy borrowed from vispy for installing opengl libs on windows
+    # strategy borrowed from vispy for installing opengl libs on windows
     - name: Install Windows OpenGL
       if: runner.os == 'Windows'
       run: |
