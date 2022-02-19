@@ -12,7 +12,7 @@ jobs:
         os: [
           ubuntu-18.04,
           ubuntu-20.04,
-          windows-latest,
+          # windows-latest,
           macOS-10.15,
         ]
 
@@ -27,12 +27,12 @@ jobs:
     - uses: tlambert03/setup-qt-libs@v1
 
     # strategy borrowed from vispy for installing opengl libs on windows
-    - name: Install Windows OpenGL
-      if: runner.os == 'Windows'
-      run: |
-        git clone --depth 1 https://github.com/pyvista/gl-ci-helpers.git
-        powershell gl-ci-helpers/appveyor/install_opengl.ps1
-        if (Test-Path -Path "C:\Windows\system32\opengl32.dll" -PathType Leaf) {Exit 0} else {Exit 1}
+    # - name: Install Windows OpenGL
+    #   if: runner.os == 'Windows'
+    #   run: |
+    #     git clone --depth 1 https://github.com/pyvista/gl-ci-helpers.git
+    #     powershell gl-ci-helpers/appveyor/install_opengl.ps1
+    #     if (Test-Path -Path "C:\Windows\system32\opengl32.dll" -PathType Leaf) {Exit 0} else {Exit 1}
 
     - name: Install Dependencies
       run: |
