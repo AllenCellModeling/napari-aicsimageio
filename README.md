@@ -1,7 +1,8 @@
 # napari-aicsimageio
 
-[![Build Status](https://github.com/AllenCellModeling/napari-aicsimageio/workflows/Build%20Master/badge.svg)](https://github.com/AllenCellModeling/napari-aicsimageio/actions)
-[![Code Coverage](https://codecov.io/gh/AllenCellModeling/napari-aicsimageio/branch/master/graph/badge.svg)](https://codecov.io/gh/AllenCellModeling/napari-aicsimageio)
+[![License](https://img.shields.io/pypi/l/napari-aicsimageio.svg?color=green)](https://github.com/AllenCellModeling/napari-aicsimageio/raw/main/LICENSE)
+[![Build Status](https://github.com/AllenCellModeling/napari-aicsimageio/workflows/Build%20Main/badge.svg)](https://github.com/AllenCellModeling/napari-aicsimageio/actions)
+[![Code Coverage](https://codecov.io/gh/AllenCellModeling/napari-aicsimageio/branch/main/graph/badge.svg)](https://codecov.io/gh/AllenCellModeling/napari-aicsimageio)
 
 AICSImageIO bindings for napari
 
@@ -10,11 +11,17 @@ AICSImageIO bindings for napari
 ## Features
 
 -   Supports reading metadata and imaging data for:
-    -   `CZI`
     -   `OME-TIFF`
     -   `TIFF`
+    -   `CZI`
+    -   `LIF`
+    -   `ND2`
+    -   `DV`
     -   Any formats supported by [aicsimageio](https://github.com/AllenCellModeling/aicsimageio)
+    -   Any formats supported by [bioformats](https://github.com/tlambert03/bioformats_jar)
     -   Any additional format supported by [imageio](https://github.com/imageio/imageio)
+
+_While upstream `aicsimageio` is released under BSD-3 license, this plugin is released under GPLv3 license because it installs all format reader dependencies._
 
 ## Installation
 
@@ -76,4 +83,4 @@ If you find `aicsimageio` _(or `napari-aicsimageio`)_ useful, please cite as:
 
 > AICSImageIO Contributors (2021). AICSImageIO: Image Reading, Metadata Conversion, and Image Writing for Microscopy Images in Pure Python [Computer software]. GitHub. https://github.com/AllenCellModeling/aicsimageio
 
-_Free software: BSD-3-Clause_
+_Free software: GPLv3_
