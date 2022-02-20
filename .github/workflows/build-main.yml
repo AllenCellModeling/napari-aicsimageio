@@ -20,7 +20,7 @@ jobs:
         os: [
           ubuntu-18.04,
           ubuntu-20.04,
-          # windows-latest,
+          windows-latest,
           macOS-10.15,
         ]
 
