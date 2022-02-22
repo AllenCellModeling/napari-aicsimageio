@@ -51,22 +51,34 @@ napari viewer thanks to `ome-types`.
 
 ![screenshot of an OME-TIFF image view, multi-channel, z-stack, with metadata viewer](https://raw.githubusercontent.com/AllenCellModeling/napari-aicsimageio/main/images/ome-tiff-with-metadata-viewer.png)
 
-#### Mosaic Reading
-
-When reading CZI or LIF images, if the image is a mosaic tiled image, `napari-aicsimageio`
-will return the reconstructed image:
-
-![screenshot of a reconstructed / restitched mosaic tile LIF](https://raw.githubusercontent.com/AllenCellModeling/napari-aicsimageio/main/images/tiled-lif.png)
-
 #### Multi-Scene Selection
-
-**Experimental**
 
 When reading a multi-scene file, a widget will be added to the napari viewer to manage
 scene selection (clearing the viewer each time you change scene or adding the
 scene content to the viewer) and a list of all scenes in the file.
 
 ![gif of drag and drop file to scene selection and management](https://raw.githubusercontent.com/AllenCellModeling/napari-aicsimageio/main/images/scene-selection.gif)
+
+#### Access to the AICSImage Object and Metadata
+
+The loaded `AICSImage` object, the raw metadata,
+and in certain cases the converted `ome_types` metadata object,
+are all made available in the console in the layer metadata:
+
+![napari viewer with console open showing `viewer.layers[0].metadata`](https://raw.githubusercontent.com/AllenCellModeling/napari-aicsimageio/main/images/console-access.png)
+
+Access with:
+
+```python
+viewer.layers[0].metadata
+```
+
+#### Mosaic Reading
+
+When reading CZI or LIF images, if the image is a mosaic tiled image, `napari-aicsimageio`
+will return the reconstructed image:
+
+![screenshot of a reconstructed / restitched mosaic tile LIF](https://raw.githubusercontent.com/AllenCellModeling/napari-aicsimageio/main/images/tiled-lif.png)
 
 ## Development
 
