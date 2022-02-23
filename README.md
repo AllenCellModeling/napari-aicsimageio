@@ -61,16 +61,39 @@ scene content to the viewer) and a list of all scenes in the file.
 
 #### Access to the AICSImage Object and Metadata
 
-The loaded `AICSImage` object, the raw metadata,
-and in certain cases the converted `ome_types` metadata object,
-are all made available in the console in the layer metadata:
-
 ![napari viewer with console open showing `viewer.layers[0].metadata`](https://raw.githubusercontent.com/AllenCellModeling/napari-aicsimageio/main/images/console-access.png)
 
-Access with:
+You can access the `AICSImage` object used to load the image pixel data and
+image metadata using the built-in napari console:
 
 ```python
-viewer.layers[0].metadata
+img = viewer.layers[0].metadata["aicsimage"]
+img.dims.order  # TCZYX
+img.channel_names  # ["Bright", "Struct", "Nuc", "Memb"]
+img.get_image_dask_data("ZYX")  # dask.array.Array
+```
+
+The napari layer metadata dictionary also stores a shorthand
+for the raw image metadata:
+
+```python
+viewer.layers[0].metadata["raw"]
+```
+
+The metadata is returned in whichever format is used by the underlying
+file format reader, i.e. for CZI the raw metadata is returned as
+an `xml.etree.ElementTree.Element`, for OME-TIFF the raw metadata is returned
+as an `OME` object from `ome-types`.
+
+Lastly, if the underlying file format reader has an OME metadata conversion function,
+you may additionally see a key in the napari layer metadata dictionary
+called `"ome_types"`. For example, because the AICSImageIO
+`CZIReader` and `BioformatsReader` both support converting raw image metadata
+to OME metadata, you will see an `"ome_types"` key that stores the metadata transformed
+into the OME metadata model.
+
+```python
+viewer.layers[0].metadata["ome_types"]  # OME object from ome-types
 ```
 
 #### Mosaic Reading
