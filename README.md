@@ -77,7 +77,7 @@ The napari layer metadata dictionary also stores a shorthand
 for the raw image metadata:
 
 ```python
-viewer.layers[0].metadata["raw"]
+viewer.layers[0].metadata["raw_image_metadata"]
 ```
 
 The metadata is returned in whichever format is used by the underlying
