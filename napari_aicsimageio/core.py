@@ -93,8 +93,13 @@ def _get_meta(data: xr.DataArray, img: AICSImage) -> Dict[str, Any]:
         meta["scale"] = tuple(scale)
 
     # Apply all other metadata
-    meta["metadata"] = {"ome_types": img.metadata}
+    img_meta = {"aicsimage": img, "raw_image_metadata": img.metadata}
+    try:
+        img_meta["ome_types"] = img.ome_metadata
+    except Exception:
+        pass
 
+    meta["metadata"] = img_meta
     return meta
 
 
