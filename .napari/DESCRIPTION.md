@@ -1,19 +1,35 @@
 ## Features
-* Supports reading metadata and imaging data for:
-    * `CZI`
-    * `OME-TIFF`
-    * `TIFF`
-    * Any formats supported by [aicsimageio](https://github.com/AllenCellModeling/aicsimageio)
-    * Any additional format supported by [imageio](https://github.com/imageio/imageio)
+
+-   Supports reading metadata and imaging data for:
+    -   `OME-TIFF`
+    -   `TIFF`
+    -   `CZI` (Zeiss)
+    -   `LIF` (Leica)
+    -   `ND2` (Nikon)
+    -   `DV` (DeltaVision)
+    -   Any formats supported by [aicsimageio](https://github.com/AllenCellModeling/aicsimageio)
+    -   Any formats supported by [bioformats](https://github.com/tlambert03/bioformats_jar)
+        -   `SLD` (Slidebook)
+        -   `SVS` (Aperio)
+        -   [Full List](https://docs.openmicroscopy.org/bio-formats/6.5.1/supported-formats.html)
+    -   Any additional format supported by [imageio](https://github.com/imageio/imageio)
+        -   `PNG`
+        -   `JPG`
+        -   `GIF`
+        -   `AVI`
+        -   [Full List](https://imageio.readthedocs.io/en/v2.4.1/formats.html)
+
+_While upstream `aicsimageio` is released under BSD-3 license, this plugin is released under GPLv3 license because it installs all format reader dependencies._
 
 ### Plugin Variants
 
 ![screenshot of plugin sorter showing that napari-aicsimageio-in-memory should be placed above napari-aicsimageio-out-of-memory](https://raw.githubusercontent.com/AllenCellModeling/napari-aicsimageio/main/images/plugin-sorter.png)
 
 There are two variants of this plugin that are added during installation:
-* `aicsimageio-in-memory`, which reads an image fully into memory
-* `aicsimageio-out-of-memory`, which delays reading ZYX chunks until required.
-This allows for incredible large files to be read and displayed.
+
+-   `aicsimageio-in-memory`, which reads an image fully into memory
+-   `aicsimageio-out-of-memory`, which delays reading ZYX chunks until required.
+    This allows for incredibly large files to be read and displayed.
 
 ## Examples of Features
 
@@ -28,16 +44,54 @@ napari viewer thanks to `ome-types`.
 
 ![screenshot of an OME-TIFF image view, multi-channel, z-stack, with metadata viewer](https://raw.githubusercontent.com/AllenCellModeling/napari-aicsimageio/main/images/ome-tiff-with-metadata-viewer.png)
 
-#### Mosaic CZI Reading
+#### Multi-Scene Selection
 
-When reading CZI images, if the image is a mosaic tiled image, `napari-aicsimageio`
-will return the reconstructed image:
+When reading a multi-scene file, a widget will be added to the napari viewer to manage
+scene selection (clearing the viewer each time you change scene or adding the
+scene content to the viewer) and a list of all scenes in the file.
 
-![screenshot of a reconstructed / restitched mosaic tile CZI](https://raw.githubusercontent.com/AllenCellModeling/napari-aicsimageio/main/images/tiled-czi.png)
+![gif of drag and drop file to scene selection and management](https://raw.githubusercontent.com/AllenCellModeling/napari-aicsimageio/main/images/scene-selection.gif)
 
-#### Mosaic LIF Reading
+#### Access to the AICSImage Object and Metadata
 
-When reading LIF images, if the image is a mosaic tiled image, `napari-aicsimageio`
+![napari viewer with console open showing `viewer.layers[0].metadata`](https://raw.githubusercontent.com/AllenCellModeling/napari-aicsimageio/main/images/console-access.png)
+
+You can access the `AICSImage` object used to load the image pixel data and
+image metadata using the built-in napari console:
+
+```python
+img = viewer.layers[0].metadata["aicsimage"]
+img.dims.order  # TCZYX
+img.channel_names  # ["Bright", "Struct", "Nuc", "Memb"]
+img.get_image_dask_data("ZYX")  # dask.array.Array
+```
+
+The napari layer metadata dictionary also stores a shorthand
+for the raw image metadata:
+
+```python
+viewer.layers[0].metadata["raw_image_metadata"]
+```
+
+The metadata is returned in whichever format is used by the underlying
+file format reader, i.e. for CZI the raw metadata is returned as
+an `xml.etree.ElementTree.Element`, for OME-TIFF the raw metadata is returned
+as an `OME` object from `ome-types`.
+
+Lastly, if the underlying file format reader has an OME metadata conversion function,
+you may additionally see a key in the napari layer metadata dictionary
+called `"ome_types"`. For example, because the AICSImageIO
+`CZIReader` and `BioformatsReader` both support converting raw image metadata
+to OME metadata, you will see an `"ome_types"` key that stores the metadata transformed
+into the OME metadata model.
+
+```python
+viewer.layers[0].metadata["ome_types"]  # OME object from ome-types
+```
+
+#### Mosaic Reading
+
+When reading CZI or LIF images, if the image is a mosaic tiled image, `napari-aicsimageio`
 will return the reconstructed image:
 
 ![screenshot of a reconstructed / restitched mosaic tile LIF](https://raw.githubusercontent.com/AllenCellModeling/napari-aicsimageio/main/images/tiled-lif.png)
@@ -48,4 +102,4 @@ If you find `aicsimageio` _(or `napari-aicsimageio`)_ useful, please cite as:
 
 > AICSImageIO Contributors (2021). AICSImageIO: Image Reading, Metadata Conversion, and Image Writing for Microscopy Images in Pure Python [Computer software]. GitHub. https://github.com/AllenCellModeling/aicsimageio
 
-_Free software: BSD-3-Clause_
+_Free software: GPLv3_

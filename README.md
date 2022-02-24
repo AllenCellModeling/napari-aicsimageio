@@ -13,13 +13,21 @@ AICSImageIO bindings for napari
 -   Supports reading metadata and imaging data for:
     -   `OME-TIFF`
     -   `TIFF`
-    -   `CZI`
-    -   `LIF`
-    -   `ND2`
-    -   `DV`
+    -   `CZI` (Zeiss)
+    -   `LIF` (Leica)
+    -   `ND2` (Nikon)
+    -   `DV` (DeltaVision)
     -   Any formats supported by [aicsimageio](https://github.com/AllenCellModeling/aicsimageio)
     -   Any formats supported by [bioformats](https://github.com/tlambert03/bioformats_jar)
+        -   `SLD` (Slidebook)
+        -   `SVS` (Aperio)
+        -   [Full List](https://docs.openmicroscopy.org/bio-formats/6.5.1/supported-formats.html)
     -   Any additional format supported by [imageio](https://github.com/imageio/imageio)
+        -   `PNG`
+        -   `JPG`
+        -   `GIF`
+        -   `AVI`
+        -   [Full List](https://imageio.readthedocs.io/en/v2.4.1/formats.html)
 
 _While upstream `aicsimageio` is released under BSD-3 license, this plugin is released under GPLv3 license because it installs all format reader dependencies._
 
