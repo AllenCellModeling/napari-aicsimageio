@@ -45,7 +45,7 @@ CZI_FILE = "variable_scene_shape_first_scene_pyramid.czi"
                     "0 :: A1-A1 :: PGC",
                 ],
                 "channel_axis": 0,
-                "scale": (9.08210704883533, 9.08210704883533),
+                "scale": (0.908210704883533, 0.908210704883533),
             },
         ),
         (
