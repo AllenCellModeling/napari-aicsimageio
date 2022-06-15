@@ -33,7 +33,7 @@ _While upstream `aicsimageio` is released under BSD-3 license, this plugin is re
 
 ## Installation
 
-**Stable Release:** `pip install napari-aicsimageio`<br>
+**Stable Release:** `pip install napari-aicsimageio` or `conda install napari-aicsimageio -c conda-forge`<br>
 **Development Head:** `pip install git+https://github.com/AllenCellModeling/napari-aicsimageio.git`
 
 ### Plugin Variants
