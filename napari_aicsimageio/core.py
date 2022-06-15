@@ -183,7 +183,7 @@ def _get_scenes(path: "PathLike", img: AICSImage, in_memory: bool) -> None:
 
         viewer.add_image(data, **meta)
 
-    list_widget.currentItemChanged.connect(open_scene)
+    list_widget.currentItemChanged.connect(open_scene)  # type: ignore
 
 
 def reader_function(path: "PathLike", in_memory: bool) -> Optional[List["LayerData"]]:
