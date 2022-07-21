@@ -1,0 +1,44 @@
+name: napari-aicsimageio
+schema_version: 0.1.0
+contributions:
+  commands:
+  - id: napari-aicsimageio.get_reader
+    title: Get AICSImageIO Reader
+    python_name: napari_aicsimageio.core:get_reader
+  readers:
+  - command: napari-aicsimageio.get_reader
+    filename_patterns: [
+      '*.1sc', '*.2fl', '*.3fr', '*.acff', '*.acqp', '*.afi', '*.afm', '*.aim', '*.al3d',
+      '*.ali', '*.am', '*.amiramesh', '*.ano', '*.apl', '*.arf', '*.array-like', '*.arw',
+      '*.avi', '*.bay', '*.bif', '*.bin', '*.bip', '*.bmp', '*.bmq', '*.bsdf', '*.bufr',
+      '*.bw', '*.c01', '*.cap', '*.cat', '*.cfg', '*.ch5', '*.cif', '*.cine', '*.cr2',
+      '*.crw', '*.cs1', '*.csv', '*.ct', '*.ct.img', '*.cur', '*.cut', '*.cxd', '*.czi',
+      '*.dat', '*.db', '*.dc2', '*.dcm', '*.dcr', '*.dcx', '*.dds', '*.df3', '*.dicom',
+      '*.dm2', '*.dm3', '*.dng', '*.drf', '*.dsc', '*.dti', '*.dv', '*.ecw', '*.emf',
+      '*.eps', '*.epsi', '*.erf', '*.exp', '*.exr', '*.fake', '*.fdf', '*.fff', '*.ffr',
+      '*.fid', '*.fit', '*.fits', '*.flc', '*.flex', '*.fli', '*.fpx', '*.frm', '*.ftc',
+      '*.fts', '*.ftu', '*.fz', '*.g3', '*.gbr', '*.gdcm', '*.gel', '*.gif', '*.gipl',
+      '*.grey', '*.grib', '*.h5', '*.hdf', '*.hdf5', '*.hdp', '*.hdr', '*.hed', '*.his',
+      '*.htd', '*.htm', '*.html', '*.hx', '*.i2i', '*.ia', '*.icns', '*.ico', '*.ics',
+      '*.ids', '*.iff', '*.iim', '*.iiq', '*.im', '*.im3', '*.img', '*.imggz', '*.ims',
+      '*.inf', '*.inr', '*.ipl', '*.ipm', '*.ipw', '*.j2c', '*.j2k', '*.jfif', '*.jif',
+      '*.jng', '*.jp2', '*.jpc', '*.jpe', '*.jpeg', '*.jpf', '*.jpg', '*.jpk', '*.jpx',
+      '*.jxr', '*.k25', '*.kc2', '*.kdc', '*.klb', '*.koa', '*.l2d', '*.labels', '*.lbm',
+      '*.lei', '*.lfp', '*.lfr', '*.lif', '*.liff', '*.lim', '*.lms', '*.lsm', '*.mdb',
+      '*.mdc', '*.mef', '*.mgh', '*.mha', '*.mhd', '*.mic', '*.mkv', '*.mnc', '*.mnc2',
+      '*.mng', '*.mod', '*.mos', '*.mov', '*.mp4', '*.mpeg', '*.mpg', '*.mpo', '*.mrc',
+      '*.mri', '*.mrw', '*.msp', '*.msr', '*.mtb', '*.mvd2', '*.naf', '*.nd', '*.nd2',
+      '*.ndpi', '*.ndpis', '*.nef', '*.nhdr', '*.nia', '*.nii', '*.nii.gz', '*.niigz',
+      '*.npz', '*.nrrd', '*.nrw', '*.obf', '*.oib', '*.oif', '*.oir', '*.ome', '*.ome.tif',
+      '*.ome.tiff', '*.orf', '*.par', '*.pbm', '*.pcd', '*.pcoraw', '*.pct', '*.pcx',
+      '*.pef', '*.pfm', '*.pgm', '*.pic', '*.pict', '*.png', '*.pnl', '*.ppm', '*.pr3',
+      '*.ps', '*.psd', '*.ptx', '*.pxn', '*.pxr', '*.qptiff', '*.qtk', '*.r3d', '*.raf',
+      '*.ras', '*.raw', '*.rcpnl', '*.rdc', '*.rec', '*.rgb', '*.rgba', '*.rw2', '*.rwl',
+      '*.rwz', '*.scan', '*.scn', '*.sdt', '*.seq', '*.sif', '*.sld', '*.sm2', '*.sm3',
+      '*.spc', '*.spe', '*.spi', '*.sr2', '*.srf', '*.srw', '*.st', '*.sti', '*.stk',
+      '*.stp', '*.svs', '*.swf', '*.sxm', '*.targa', '*.tfr', '*.tga', '*.thm', '*.tif',
+      '*.tiff', '*.tim', '*.tnb', '*.top', '*.txt', '*.v', '*.vff', '*.vms', '*.vsi',
+      '*.vtk', '*.vws', '*.wap', '*.wat', '*.wav', '*.wbm', '*.wbmp', '*.wdp', '*.webp',
+      '*.wlz', '*.wmf', '*.wmv', '*.wpi', '*.xbm', '*.xdce', '*.xml', '*.xpm', '*.xqd',
+      '*.xqf', '*.xv', '*.xys', '*.zfp', '*.zfr', '*.zip', '*.zpo', '*.zvi'
+    ]

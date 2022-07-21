@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import annotations
 
 from functools import partial
+from logging import getLogger
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
-import napari
-import xarray as xr
 from aicsimageio import AICSImage, exceptions
 from aicsimageio.dimensions import DimensionNames
 from qtpy.QtWidgets import (
@@ -18,7 +18,10 @@ from qtpy.QtWidgets import (
 )
 
 if TYPE_CHECKING:
+    import xarray as xr
     from napari.types import LayerData, PathLike, ReaderFunction
+
+logger = getLogger(__name__)
 
 ###############################################################################
 
@@ -28,6 +31,9 @@ UNPACK_CHANNELS_TO_LAYERS = "Unpack Channels as Layers"
 
 SCENE_LABEL_DELIMITER = " :: "
 
+# Threshold above which to use out-of-memory loading
+IN_MEM_THRESHOLD_PERCENT = 0.3
+IN_MEM_THRESHOLD_SIZE_BYTES = 4e9  # 4GB
 ###############################################################################
 
 
@@ -44,7 +50,7 @@ def _get_full_image_data(
 
         # Catch reader does not support tile stitching
         except NotImplementedError:
-            print(
+            logger.warning(
                 "AICSImageIO: Mosaic tile stitching "
                 "not yet supported for this file format reader."
             )
@@ -104,6 +110,8 @@ def _get_meta(data: xr.DataArray, img: AICSImage) -> Dict[str, Any]:
 
 
 def _widget_is_checked(widget_name: str) -> bool:
+    import napari
+
     # Get napari viewer from current process
     viewer = napari.current_viewer()
 
@@ -119,6 +127,8 @@ def _widget_is_checked(widget_name: str) -> bool:
 
 # Function to handle multi-scene files.
 def _get_scenes(path: "PathLike", img: AICSImage, in_memory: bool) -> None:
+    import napari
+
     # Get napari viewer from current process
     viewer = napari.current_viewer()
 
@@ -186,47 +196,64 @@ def _get_scenes(path: "PathLike", img: AICSImage, in_memory: bool) -> None:
     list_widget.currentItemChanged.connect(open_scene)  # type: ignore
 
 
-def reader_function(path: "PathLike", in_memory: bool) -> Optional[List["LayerData"]]:
+def reader_function(
+    path: "PathLike", in_memory: Optional[bool] = None
+) -> Optional[List["LayerData"]]:
     """
     Given a single path return a list of LayerData tuples.
     """
-    # Alert console of how we are loading the image
-    print(f"AICSImageIO: Reader will load image in-memory: {in_memory}")
-
     # Only support single path
     if isinstance(path, list):
-        print("AICSImageIO: Multi-file reading not yet supported.")
+        logger.info("AICSImageIO: Multi-file reading not yet supported.")
         return None
+
+    if in_memory is None:
+        from psutil import virtual_memory
+
+        imsize = Path(path).stat().st_size
+        available_mem = virtual_memory().available
+        _in_memory = (
+            imsize <= IN_MEM_THRESHOLD_SIZE_BYTES
+            and imsize / available_mem <= IN_MEM_THRESHOLD_PERCENT
+        )
+    else:
+        _in_memory = in_memory
+
+    # Alert console of how we are loading the image
+    logger.info(f"AICSImageIO: Reader will load image in-memory: {_in_memory}")
 
     # Open file and get data
     img = AICSImage(path)
 
     # Check for multiple scenes
     if len(img.scenes) > 1:
-        print(
+        logger.info(
             f"AICSImageIO: Image contains {len(img.scenes)} scenes. "
             f"Supporting more than the first scene is experimental. "
             f"Select a scene from the list widget. There may be dragons!"
         )
         # Launch the list widget
-        _get_scenes(path=path, img=img, in_memory=in_memory)
+        _get_scenes(path=path, img=img, in_memory=_in_memory)
 
         # Return an empty LayerData list; ImgLayers will be handled via the widget.
         # HT Jonas Windhager
         return [(None,)]
     else:
-        data = _get_full_image_data(img, in_memory=in_memory)
+        data = _get_full_image_data(img, in_memory=_in_memory)
         meta = _get_meta(data, img)
         return [(data.data, meta, "image")]
 
 
-def get_reader(path: "PathLike", in_memory: bool) -> Optional["ReaderFunction"]:
+def get_reader(
+    path: "PathLike", in_memory: Optional[bool] = None
+) -> Optional["ReaderFunction"]:
     """
     Given a single path or list of paths, return the appropriate aicsimageio reader.
     """
     # Only support single path
     if isinstance(path, list):
-        print("AICSImageIO: Multi-file reading not yet supported.")
+        logger.info("AICSImageIO: Multi-file reading not yet supported.")
+        return None
 
     # See if there is a supported reader for the file(s) provided
     try:
@@ -241,13 +268,13 @@ def get_reader(path: "PathLike", in_memory: bool) -> Optional["ReaderFunction"]:
 
     # No supported reader, return None
     except exceptions.UnsupportedFileFormatError:
-        print("AICSImageIO: Unsupported file format.")
+        logger.warning("AICSImageIO: Unsupported file format.")
         return None
 
     except Exception as e:
-        print("AICSImageIO: exception occurred during reading...")
-        print(e)
-        print(
+        logger.warning("AICSImageIO: exception occurred during reading...")
+        logger.warning(e)
+        logger.warning(
             "If this issue looks like a problem with AICSImageIO, "
             "please file a bug report: "
             "https://github.com/AllenCellModeling/napari-aicsimageio"

@@ -2,15 +2,19 @@
 # -*- coding: utf-8 -*-
 
 from pathlib import Path
-from typing import Any, Callable, Dict, Tuple, Type
+from typing import TYPE_CHECKING, Any, Callable, Dict, Tuple, Type
 
 import dask.array as da
-import napari
+import npe2
 import numpy as np
 import pytest
-from napari.types import ArrayLike
 
 from napari_aicsimageio import core
+
+if TYPE_CHECKING:
+    from napari import Viewer
+    from napari.types import ArrayLike
+    from npe2._pytest_plugin import TestPluginManager
 
 ###############################################################################
 
@@ -85,6 +89,7 @@ def test_reader(
     expected_dtype: type,
     expected_shape: Tuple[int, ...],
     expected_meta: Dict[str, Any],
+    npe2pm: "TestPluginManager",
 ) -> None:
     # Resolve filename to filepath
     if isinstance(filename, str):
@@ -111,6 +116,11 @@ def test_reader(
         meta.pop("metadata", None)
         assert meta == expected_meta  # type: ignore
 
+        # confirm that this also works via npe2
+        with npe2pm.tmp_plugin(package="napari-aicsimageio") as plugin:
+            [via_npe2] = npe2.read([path], stack=False, plugin_name=plugin.name)
+            assert via_npe2[0].shape == data.shape  # type: ignore
+
 
 SINGLESCENE_FILE = "s_1_t_1_c_1_z_1.czi"
 MULTISCENE_FILE = "s_3_t_1_c_3_z_5.czi"
@@ -131,11 +141,11 @@ MULTISCENE_FILE = "s_3_t_1_c_3_z_5.czi"
     ],
 )
 def test_for_multiscene_widget(
-    make_napari_viewer: Callable[..., napari.Viewer],
+    make_napari_viewer: Callable[..., "Viewer"],
     resources_dir: Path,
     filename: str,
     in_memory: bool,
-    expected_dtype: Type[ArrayLike],
+    expected_dtype: Type["ArrayLike"],
     expected_shape: Tuple[int, ...],
 ) -> None:
     # Make a viewer
