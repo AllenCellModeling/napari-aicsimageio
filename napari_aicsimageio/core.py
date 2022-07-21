@@ -208,9 +208,11 @@ def reader_function(
         return None
 
     if in_memory is None:
+        from aicsimageio.utils.io_utils import pathlike_to_fs
         from psutil import virtual_memory
 
-        imsize = Path(path).stat().st_size
+        fs, path = pathlike_to_fs(path)
+        imsize = fs.size(path)
         available_mem = virtual_memory().available
         _in_memory = (
             imsize <= IN_MEM_THRESHOLD_SIZE_BYTES
