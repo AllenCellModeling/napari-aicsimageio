@@ -89,7 +89,7 @@ def test_reader(
     expected_dtype: type,
     expected_shape: Tuple[int, ...],
     expected_meta: Dict[str, Any],
-    npe2pm: 'TestPluginManager',
+    npe2pm: "TestPluginManager",
 ) -> None:
     # Resolve filename to filepath
     if isinstance(filename, str):
