@@ -46,7 +46,7 @@ requirements = [
     "aicsimageio[all]>=4.6.3",
     "fsspec[http]",  # no version pin, we pull from aicsimageio
     "napari>=0.4.11",
-    "napari_plugin_engine>=0.1.4",
+    "psutil>=5.7.0",
     # Formats not included by default with aicsimageio
     "aicspylibczi>=3.0.5",
     "bioformats_jar",
@@ -60,8 +60,8 @@ extra_requirements = {
 }
 
 setup(
-    author="Jackson Maxfield Brown",
-    author_email="jmaxfieldbrown@gmail.com",
+    author="Eva Maxfield Brown",
+    author_email="evamaxfieldbrown@gmail.com",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Science/Research",
@@ -81,19 +81,19 @@ setup(
         "Multiple file format reading directly into napari using pure Python."
     ),
     entry_points={
-        "napari.plugin": [
-            "aicsimageio-out-of-memory = napari_aicsimageio.out_of_memory",
-            "aicsimageio-in-memory = napari_aicsimageio.in_memory",
+        "napari.manifest": [
+            "napari-aicsimageio = napari_aicsimageio:napari.yaml",
         ],
     },
     install_requires=requirements,
-    license="BSD-3-Clause",
+    license="GPLv3",
     long_description=readme,
     long_description_content_type="text/markdown",
     include_package_data=True,
     keywords="napari, aicsimageio, TIFF, CZI, LIF, imageio, image reading, metadata",
     name="napari-aicsimageio",
     packages=find_packages(exclude=["tests", "*.tests", "*.tests.*"]),
+    package_data={"napari_aicsimageio": ["napari.yaml"]},
     python_requires=">=3.8",
     setup_requires=setup_requirements,
     test_suite="napari_aicsimageio/tests",

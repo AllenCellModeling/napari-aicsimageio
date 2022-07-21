@@ -2,8 +2,8 @@
 
 """Top-level package for napari-aicsimageio."""
 
-__author__ = "Jackson Maxfield Brown"
-__email__ = "jacksonb@alleninstitute.org"
+__author__ = "Eva Maxfield Brown"
+__email__ = "evamaxfieldbrown@gmail.com"
 # Do not edit this string manually, always use bumpversion
 # Details in CONTRIBUTING.md
 __version__ = "0.6.1"
