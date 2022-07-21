@@ -31,6 +31,9 @@ UNPACK_CHANNELS_TO_LAYERS = "Unpack Channels as Layers"
 
 SCENE_LABEL_DELIMITER = " :: "
 
+# Threshold above which to use out-of-memory loading
+IN_MEM_THRESHOLD_PERCENT = 0.3
+IN_MEM_THRESHOLD_SIZE_BYTES = 4e9  # 4GB
 ###############################################################################
 
 
@@ -193,9 +196,6 @@ def _get_scenes(path: "PathLike", img: AICSImage, in_memory: bool) -> None:
     list_widget.currentItemChanged.connect(open_scene)  # type: ignore
 
 
-IN_MEM_THRESHOLD = 0.3  # Threshold above which to use out-of-memory loading
-
-
 def reader_function(
     path: "PathLike", in_memory: Optional[bool] = None
 ) -> Optional[List["LayerData"]]:
@@ -212,7 +212,10 @@ def reader_function(
 
         imsize = Path(path).stat().st_size
         available_mem = virtual_memory().available
-        _in_memory = (imsize / available_mem) < IN_MEM_THRESHOLD
+        _in_memory = (
+            imsize <= IN_MEM_THRESHOLD_SIZE_BYTES
+            and imsize / available_mem <= IN_MEM_THRESHOLD_PERCENT
+        )
     else:
         _in_memory = in_memory
 
