@@ -21,15 +21,15 @@
 
 _While upstream `aicsimageio` is released under BSD-3 license, this plugin is released under GPLv3 license because it installs all format reader dependencies._
 
-### Plugin Variants
+### Reading Mode Threshold
 
-![screenshot of plugin sorter showing that napari-aicsimageio-in-memory should be placed above napari-aicsimageio-out-of-memory](https://raw.githubusercontent.com/AllenCellModeling/napari-aicsimageio/main/images/plugin-sorter.png)
+This image reading plugin will load the provided image directly into memory if it meets
+the following two conditions:
 
-There are two variants of this plugin that are added during installation:
+1. The filesize is less than 4GB.
+2. The filesize is less than 30% of machine memory available.
 
--   `aicsimageio-in-memory`, which reads an image fully into memory
--   `aicsimageio-out-of-memory`, which delays reading ZYX chunks until required.
-    This allows for incredibly large files to be read and displayed.
+If either of these conditions isn't met, the image is loaded in chunks only as needed.
 
 ## Examples of Features
 
