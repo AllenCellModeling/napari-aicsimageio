@@ -57,7 +57,7 @@ jobs:
     - name: Test with pytest
       uses: GabrielBB/xvfb-action@v1
       with:
-        run: python -m pytest --cov-report xml --cov=napari_aicsimageio napari_aicsimageio/tests/
+        run: python -m pytest --cov-report=xml --cov=napari_aicsimageio
     - name: Upload codecov
       uses: codecov/codecov-action@v3
 
