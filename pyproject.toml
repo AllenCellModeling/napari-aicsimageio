@@ -1,8 +1,7 @@
 # https://peps.python.org/pep-0517/
 [build-system]
-requires = ["setuptools>=45", "wheel", "setuptools-scm>=6.2"]
+requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
-
 
 # https://peps.python.org/pep-0621/
 [project]
@@ -100,7 +99,7 @@ napari-aicsimageio = "napari_aicsimageio:napari.yaml"
 [tool.setuptools]
 zip-safe = false
 include-package-data = true
-packages = { find = { exclude = ["tests", "*.tests", "*.tests.*"] } }
+packages = { find = { exclude = ['scripts'] } }
 
 [tool.setuptools.package-data]
 "*" = ["*.yaml"]
@@ -120,8 +119,16 @@ use_parentheses = true
 # https://github.com/mgedmin/check-manifest#configuration
 [tool.check-manifest]
 ignore = [
+  ".bumpversion.cfg",
+  ".editorconfig",
   ".napari/**/*",
   ".pre-commit-config.yaml",
+  "CODE_OF_CONDUCT.md",
+  "codecov.yml",
+  "CONTRIBUTING.md",
+  "images/**/*",
+  "Makefile",
+  "scripts/**/*",
 ]
 
 # https://docs.pytest.org/en/6.2.x/customize.html
@@ -129,8 +136,8 @@ ignore = [
 minversion = "6.0"
 xfail_strict = true
 filterwarnings = [
-  "error:::napari_aicsimageio",                                         # make all internal warnings errors (test them directly)
-	"ignore:distutils Version classes are deprecated:",
+  "error:::napari_aicsimageio",                       # make all internal warnings errors (test them directly)
+  "ignore:distutils Version classes are deprecated:",
 ]
 
 [too.mypy]
