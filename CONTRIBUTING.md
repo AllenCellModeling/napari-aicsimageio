@@ -75,4 +75,6 @@ $ git push upstream --follow-tags
 (The `-a` flag indicates an [annotated tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging))
 
 The presence of a tag starting with "v" will trigger the `publish` step in the
-main github workflow, which will build the package and upload it to PyPI.
+main github workflow, which will build the package and upload it to PyPI. The
+version will be injected into the package metadata by
+[`setuptools-scm`](https://github.com/pypa/setuptools_scm)
