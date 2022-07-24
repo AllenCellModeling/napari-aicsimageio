@@ -141,10 +141,11 @@ filterwarnings = [
 ]
 
 [tool.mypy]
+files = "napari_aicsimageio/*.py"
 ignore_missing_imports = true
 disallow_untyped_defs = true
 check_untyped_defs = true
-
+show_error_codes = true
 
 # https://flake8.pycqa.org/en/latest/user/options.html
 # https://gitlab.com/durko/flake8-pyprojecttoml
