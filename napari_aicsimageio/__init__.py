@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Top-level package for napari-aicsimageio."""
 
-from importlib.metadata import version, PackageNotFoundError
+from importlib.metadata import PackageNotFoundError, version
 
 try:
     __version__ = version("napari-aicsimageio")
