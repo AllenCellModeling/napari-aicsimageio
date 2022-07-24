@@ -74,5 +74,5 @@ $ git push upstream --follow-tags
 
 (The `-a` flag indicates an [annotated tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging))
 
-This will trigger the `publish` step in the main github workflow, which will build the package
-and upload it to PyPI.
+The presence of a tag starting with "v" will trigger the `publish` step in the
+main github workflow, which will build the package and upload it to PyPI.
