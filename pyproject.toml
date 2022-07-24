@@ -140,7 +140,7 @@ filterwarnings = [
   "ignore:distutils Version classes are deprecated:",
 ]
 
-[too.mypy]
+[tool.mypy]
 ignore_missing_imports = true
 disallow_untyped_defs = true
 check_untyped_defs = true
