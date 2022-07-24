@@ -25,11 +25,7 @@ clean:  ## clean all build, python, and testing files
 	find . -name '*.pyo' -exec rm -fr {} +
 	find . -name '*~' -exec rm -fr {} +
 	find . -name '__pycache__' -exec rm -fr {} +
-	rm -fr .tox/
 	rm -fr .coverage
 	rm -fr coverage.xml
 	rm -fr htmlcov/
 	rm -fr .pytest_cache
-
-build: ## run tox / run tests and lint
-	tox

@@ -1,33 +1,37 @@
-name: Build Main
+name: CI
 
 on:
   push:
     branches:
       - main
-  schedule:
-    # <minute [0,59]> <hour [0,23]> <day of the month [1,31]> <month of the year [1,12]> <day of the week [0,6]>
-    # https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html#tag_20_25_07
-    # Run every Monday at 18:00:00 UTC (Monday at 10:00:00 PST)
-    - cron: "0 18 * * 1"
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
+  check-manifest:
+    name: Check Manifest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+      - run: pip install check-manifest && check-manifest
+
   test:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.8, 3.9]
-        os: [
-          ubuntu-18.04,
-          ubuntu-20.04,
-          windows-latest,
-          macOS-10.15,
-        ]
+        python-version: [3.8, 3.9, "3.10"]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     # Install qt support libs
@@ -53,50 +57,45 @@ jobs:
     - name: Test with pytest
       uses: GabrielBB/xvfb-action@v1
       with:
-        run: python -m pytest --cov-report xml --cov=napari_aicsimageio napari_aicsimageio/tests/
+        run: python -m pytest --cov-report=xml --cov=napari_aicsimageio
     - name: Upload codecov
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v3
 
   lint:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
     - name: Set up Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
       with:
         python-version: 3.9
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install .[test]
-    - name: Lint with flake8
-      run: |
-        flake8 napari_aicsimageio --count --verbose --show-source --statistics
-        isort napari_aicsimageio --check-only
-        mypy napari_aicsimageio
-        black --check --exclude vendor napari_aicsimageio
+        pip install pre-commit
+    - name: Lint with pre-commit
+      run: pre-commit run --all-files
 
   publish:
     if: "contains(github.event.head_commit.message, 'Bump version')"
-    needs: [test, lint]
+    needs: [check-manifest, test, lint]
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
     - name: Set up Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
       with:
         python-version: 3.9
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install setuptools wheel
+        pip install build wheel
     - name: Build Package
-      run: |
-        python setup.py sdist bdist_wheel
+      run: python -m build
     - name: Publish to PyPI
-      uses: pypa/gh-action-pypi-publish@master
+      uses: pypa/gh-action-pypi-publish@release/v1
       with:
         user: aicspypi
         password: ${{ secrets.PYPI_TOKEN }}

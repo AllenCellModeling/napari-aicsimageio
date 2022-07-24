@@ -1,0 +1,157 @@
+# https://peps.python.org/pep-0517/
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# https://peps.python.org/pep-0621/
+[project]
+name = "napari-aicsimageio"
+# Do not edit this string manually, always use bumpversion
+# Details in CONTRIBUTING.rst
+version = "0.7.0"
+description = "AICSImageIO bindings for napari"
+keywords = [
+  "aicsimageio",
+  "CZI",
+  "image reading",
+  "imageio",
+  "LIF",
+  "metadata",
+  "napari",
+  "ND2",
+  "TIFF",
+]
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "GPLv3" }
+authors = [
+  { email = "evamaxfieldbrown@gmail.com", name = "Eva Maxfield Brown" },
+  { email = "talley.lambert@gmail.com", name = "Talley Lambert" },
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Science/Research",
+  "Framework :: napari",
+  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Topic :: Scientific/Engineering :: Bio-Informatics",
+  "Topic :: Scientific/Engineering :: Image Processing",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+  "Topic :: Scientific/Engineering :: Visualization",
+  "Topic :: Scientific/Engineering",
+]
+dynamic = []
+dependencies = [
+  "aicsimageio[all]>=4.6.3",
+  "fsspec[http]",            # no version pin, we pull from aicsimageio
+  "napari>=0.4.11",
+  "psutil>=5.7.0",
+  # Formats not included by default with aicsimageio
+  "aicspylibczi>=3.0.5",
+  "bioformats_jar",
+  "readlif>=0.6.4",
+]
+
+[project.urls]
+Homepage = "https://github.com/AllenCellModeling/napari-aicsimageio"
+"Bug Tracker" = "https://github.com/AllenCellModeling/napari-aicsimageio/issues"
+Documentation = "https://github.com/AllenCellModeling/napari-aicsimageio#README.md"
+"User Support" = "https://github.com/AllenCellModeling/napari-aicsimageio/issues"
+
+# extras
+# https://peps.python.org/pep-0621/#dependencies-optional-dependencies
+[project.optional-dependencies]
+test = [
+  "PyQt5",
+  "pytest>=5.4.3",
+  "pytest-qt~=4.0",
+  "pytest-cov>=2.9.0",
+  "pytest-raises>=0.11",
+  "pytest-xvfb~=2.0",
+  "quilt3~=3.4.0",
+]
+dev = [
+  "black>=19.10b0",
+  "bump2version>=1.0.1",
+  "coverage>=5.1",
+  "docutils>=0.10,<0.16",
+  "flake8-debugger>=3.2.1",
+  "flake8-pyprojecttoml",
+  "flake8>=3.8.3",
+  "ipython>=7.15.0",
+  "isort>=5.7.0",
+  "mypy>=0.800",
+  "pytest-runner>=5.2",
+  "twine>=3.1.1",
+  "wheel>=0.34.2",
+]
+
+# Entry points
+# https://peps.python.org/pep-0621/#entry-points
+[project.entry-points."napari.manifest"]
+napari-aicsimageio = "napari_aicsimageio:napari.yaml"
+
+# https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
+[tool.setuptools]
+zip-safe = false
+include-package-data = true
+packages = { find = { exclude = ['scripts'] } }
+
+[tool.setuptools.package-data]
+"*" = ["*.yaml"]
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+ensure_newline_before_comments = true
+force_grid_wrap = 0
+include_trailing_comma = true
+line_length = 88
+multi_line_output = 3
+profile = "black"
+use_parentheses = true
+
+# https://github.com/mgedmin/check-manifest#configuration
+[tool.check-manifest]
+ignore = [
+  ".bumpversion.cfg",
+  ".editorconfig",
+  ".napari/**/*",
+  ".pre-commit-config.yaml",
+  "CODE_OF_CONDUCT.md",
+  "codecov.yml",
+  "CONTRIBUTING.md",
+  "images/**/*",
+  "Makefile",
+  "scripts/**/*",
+]
+
+# https://docs.pytest.org/en/6.2.x/customize.html
+[tool.pytest.ini_options]
+minversion = "6.0"
+xfail_strict = true
+filterwarnings = [
+  "error:::napari_aicsimageio",                       # make all internal warnings errors (test them directly)
+  "ignore:distutils Version classes are deprecated:",
+]
+
+[tool.mypy]
+files = "napari_aicsimageio/*.py"
+ignore_missing_imports = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+show_error_codes = true
+
+# https://flake8.pycqa.org/en/latest/user/options.html
+# https://gitlab.com/durko/flake8-pyprojecttoml
+[tool.flake8]
+exclude = "scripts/**"
+max-line-length = 88
+ignore = "E203,E402,W291,W503"
+min-python-version = "3.8.0"
+per-file-ignores = []
