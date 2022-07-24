@@ -1,14 +1,13 @@
 # https://peps.python.org/pep-0517/
 [build-system]
-requires = ["setuptools>=45", "wheel"]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
 
 # https://peps.python.org/pep-0621/
 [project]
 name = "napari-aicsimageio"
-# Do not edit this string manually, always use bumpversion
-# Details in CONTRIBUTING.rst
-version = "0.7.0"
 description = "AICSImageIO bindings for napari"
 keywords = [
   "aicsimageio",
@@ -44,7 +43,7 @@ classifiers = [
   "Topic :: Scientific/Engineering :: Visualization",
   "Topic :: Scientific/Engineering",
 ]
-dynamic = []
+dynamic = ["version"]
 dependencies = [
   "aicsimageio[all]>=4.6.3",
   "fsspec[http]",            # no version pin, we pull from aicsimageio
@@ -76,7 +75,6 @@ test = [
 ]
 dev = [
   "black>=19.10b0",
-  "bump2version>=1.0.1",
   "coverage>=5.1",
   "docutils>=0.10,<0.16",
   "flake8-debugger>=3.2.1",
@@ -119,7 +117,6 @@ use_parentheses = true
 # https://github.com/mgedmin/check-manifest#configuration
 [tool.check-manifest]
 ignore = [
-  ".bumpversion.cfg",
   ".editorconfig",
   ".napari/**/*",
   ".pre-commit-config.yaml",

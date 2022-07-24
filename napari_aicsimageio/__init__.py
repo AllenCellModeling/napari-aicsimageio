@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
-
 """Top-level package for napari-aicsimageio."""
+
+from importlib.metadata import version, PackageNotFoundError
+
+try:
+    __version__ = version("napari-aicsimageio")
+except PackageNotFoundError:
+    __version__ = "uninstalled"
 
 __author__ = "Eva Maxfield Brown"
 __email__ = "evamaxfieldbrown@gmail.com"
-# Do not edit this string manually, always use bumpversion
-# Details in CONTRIBUTING.md
-__version__ = "0.7.0"
 
 
 def get_module_version() -> str:
