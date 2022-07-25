@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 name = "napari-aicsimageio"
 # Do not edit this string manually, always use bumpversion
 # Details in CONTRIBUTING.rst
-version = "0.7.0"
+version = "0.7.1"
 description = "AICSImageIO bindings for napari"
 keywords = [
   "aicsimageio",
