@@ -64,13 +64,17 @@ Ready to contribute? Here's how to set up `napari-aicsimageio` for local develop
 ## Deploying
 
 A reminder for the maintainers on how to deploy.
-Make sure all your changes are committed.
-Then run:
+Make sure the main branch is checked out and all desired changes
+are merged. Then run:
 
 ```bash
-$ bumpversion patch # possible: major / minor / patch
-$ git push
-$ git push --tags
+$ git tag -a "vX.Y.Z" -m "vX.Y.Z"
+$ git push upstream --follow-tags
 ```
 
-This will release a new package version on Git + GitHub and publish to PyPI.
+(The `-a` flag indicates an [annotated tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging))
+
+The presence of a tag starting with "v" will trigger the `publish` step in the
+main github workflow, which will build the package and upload it to PyPI. The
+version will be injected into the package metadata by
+[`setuptools-scm`](https://github.com/pypa/setuptools_scm)
