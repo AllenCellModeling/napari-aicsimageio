@@ -191,7 +191,7 @@ def _get_scenes(path: "PathLike", img: AICSImage, in_memory: bool) -> None:
         data = _get_full_image_data(img=img, in_memory=in_memory)
 
         # Get metadata and add to image
-        meta = _get_meta(data, img)
+        meta = _get_meta("", data, img)
 
         # Optionally clear layers
         if _widget_is_checked(CLEAR_LAYERS_ON_SELECT):
