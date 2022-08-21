@@ -84,7 +84,8 @@ def _get_meta(data: xr.DataArray, img: AICSImage) -> Dict[str, Any]:
 
     # Handle scales
     scale: List[float] = []
-    for dim in img.reader.dims.order:
+    # check the dims of the squeezed array for scale values
+    for dim in data.dims:
         if dim in [
             DimensionNames.SpatialX,
             DimensionNames.SpatialY,
