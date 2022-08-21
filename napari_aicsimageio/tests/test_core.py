@@ -37,8 +37,8 @@ CZI_FILE = "variable_scene_shape_first_scene_pyramid.czi"
 @pytest.mark.parametrize(
     "filename, expected_shape, expected_meta",
     [
-        (PNG_FILE, (800, 537, 4), {"name": "Image:0", "rgb": True}),
-        (GIF_FILE, (72, 268, 268, 4), {"name": "Image:0", "rgb": True}),
+        (PNG_FILE, (800, 537, 4), {"name": Path(PNG_FILE).stem, "rgb": True}),
+        (GIF_FILE, (72, 268, 268, 4), {"name": Path(GIF_FILE).stem, "rgb": True}),
         (
             CZI_FILE,
             (3, 6183, 7705),
@@ -57,10 +57,10 @@ CZI_FILE = "variable_scene_shape_first_scene_pyramid.czi"
             (4, 65, 600, 900),
             {
                 "name": [
-                    "0 :: Image:0 :: Bright_2",
-                    "0 :: Image:0 :: EGFP",
-                    "0 :: Image:0 :: CMDRP",
-                    "0 :: Image:0 :: H3342",
+                    f"{Path(OME_TIFF).stem} :: Bright_2",
+                    f"{Path(OME_TIFF).stem} :: EGFP",
+                    f"{Path(OME_TIFF).stem} :: CMDRP",
+                    f"{Path(OME_TIFF).stem} :: H3342",
                 ],
                 "channel_axis": 0,
                 "scale": (0.29, 0.10833333333333332, 0.10833333333333332),
