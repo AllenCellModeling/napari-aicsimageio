@@ -62,21 +62,32 @@ def _get_full_image_data(
 
 
 # Function to get Metadata to provide with data
-def _get_meta(data: xr.DataArray, img: AICSImage) -> Dict[str, Any]:
+def _get_meta(path: "PathLike", data: xr.DataArray, img: AICSImage) -> Dict[str, Any]:
     meta: Dict[str, Any] = {}
     if DimensionNames.Channel in data.dims:
         # Construct basic metadata
-        channels_with_scene_index = [
-            f"{img.current_scene_index}{SCENE_LABEL_DELIMITER}"
-            f"{img.current_scene}{SCENE_LABEL_DELIMITER}{channel_name}"
-            for channel_name in data.coords[DimensionNames.Channel].data.tolist()
-        ]
+        # Use filename if single scene and no scene name is available
+        if len(img.scenes) == 1 and img.current_scene == "Image:0":
+            channels_with_scene_index = [
+                f"{Path(path).stem}{SCENE_LABEL_DELIMITER}{channel_name}"
+                for channel_name in data.coords[DimensionNames.Channel].data.tolist()
+            ]
+        else:
+            channels_with_scene_index = [
+                f"{img.current_scene_index}{SCENE_LABEL_DELIMITER}"
+                f"{img.current_scene}{SCENE_LABEL_DELIMITER}{channel_name}"
+                for channel_name in data.coords[DimensionNames.Channel].data.tolist()
+            ]
         meta["name"] = channels_with_scene_index
         meta["channel_axis"] = data.dims.index(DimensionNames.Channel)
 
     # Not multi-channel, use current scene as image name
     else:
-        meta["name"] = img.reader.current_scene
+        # use filename if single scene and no scene name is available
+        if len(img.scenes) == 1 and img.current_scene == "Image:0":
+            meta["name"] = Path(path).stem
+        else:
+            meta["name"] = img.reader.current_scene
 
     # Handle samples / RGB
     if DimensionNames.Samples in img.reader.dims.order:
@@ -181,7 +192,7 @@ def _get_scenes(path: "PathLike", img: AICSImage, in_memory: bool) -> None:
         data = _get_full_image_data(img=img, in_memory=in_memory)
 
         # Get metadata and add to image
-        meta = _get_meta(data, img)
+        meta = _get_meta("", data, img)
 
         # Optionally clear layers
         if _widget_is_checked(CLEAR_LAYERS_ON_SELECT):
@@ -243,7 +254,7 @@ def reader_function(
         return [(None,)]
     else:
         data = _get_full_image_data(img, in_memory=_in_memory)
-        meta = _get_meta(data, img)
+        meta = _get_meta(path, data, img)
         return [(data.data, meta, "image")]
 
 
