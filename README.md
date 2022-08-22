@@ -46,6 +46,19 @@ the following two conditions:
 
 If either of these conditions isn't met, the image is loaded in chunks only as needed.
 
+### Use napari-aicsimageio as the Reader for All File Formats
+
+If you want to force napari to always use this plugin as the reader for all file formats,
+try running this snippet:
+
+```python
+from napari.settings import get_settings
+
+get_settings().plugins.extension2reader = {'*': 'napari-aicsimageio', **get_settings().plugins.extension2reader}
+```
+
+For more details, see [#37](https://github.com/AllenCellModeling/napari-aicsimageio/issues/37).
+
 ## Examples of Features
 
 #### General Image Reading
