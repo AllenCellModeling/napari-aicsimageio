@@ -137,6 +137,31 @@ plugin on new `aicsimageio` releases.
 
 If you find `aicsimageio` _(or `napari-aicsimageio`)_ useful, please cite as:
 
-> AICSImageIO Contributors (2021). AICSImageIO: Image Reading, Metadata Conversion, and Image Writing for Microscopy Images in Pure Python [Computer software]. GitHub. https://github.com/AllenCellModeling/aicsimageio
+## Citation
+
+If you find `aicsimageio` and `napari-aicsimageio` useful, please cite this work as:
+
+> Eva Maxfield Brown, Dan Toloudis, Jamie Sherman, Madison Swain-Bowden, Talley Lambert, AICSImageIO Contributors (2021). AICSImageIO: Image Reading, Metadata Conversion, and Image Writing for Microscopy Images in Pure Python [Computer software]. GitHub. https://github.com/AllenCellModeling/aicsimageio
+
+> Eva Maxfield Brown, Talley Lambert, Peter Sobolewski, Napari-AICSImageIO Contributors (2021). Napari-AICSImageIO: Image Reading in Napari using AICSImageIO [Computer software]. GitHub. https://github.com/AllenCellModeling/napari-aicsimageio
+
+bibtex:
+```bibtex
+@misc{aicsimageio,
+  author    = {Brown, Eva Maxfield and Toloudis, Dan and Sherman, Jamie and Swain-Bowden, Madison and Lambert, Talley and {AICSImageIO Contributors}},
+  title     = {AICSImageIO: Image Reading, Metadata Conversion, and Image Writing for Microscopy Images in Pure Python},
+  year      = {2021},
+  publisher = {GitHub},
+  url       = {https://github.com/AllenCellModeling/aicsimageio}
+}
+
+@misc{napari-aicsimageio,
+  author    = {Brown, Eva Maxfield and Lambert, Talley and Sobolewski, Peter and {Napari-AICSImageIO Contributors}},
+  title     = {Napari-AICSImageIO: Image Reading in Napari using AICSImageIO},
+  year      = {2021},
+  publisher = {GitHub},
+  url       = {https://github.com/AllenCellModeling/napari-aicsimageio}
+}
+```
 
 _Free software: GPLv3_
