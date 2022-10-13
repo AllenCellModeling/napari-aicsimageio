@@ -135,10 +135,6 @@ plugin on new `aicsimageio` releases.
 
 ## Citation
 
-If you find `aicsimageio` _(or `napari-aicsimageio`)_ useful, please cite as:
-
-## Citation
-
 If you find `aicsimageio` and `napari-aicsimageio` useful, please cite this work as:
 
 > Eva Maxfield Brown, Dan Toloudis, Jamie Sherman, Madison Swain-Bowden, Talley Lambert, AICSImageIO Contributors (2021). AICSImageIO: Image Reading, Metadata Conversion, and Image Writing for Microscopy Images in Pure Python [Computer software]. GitHub. https://github.com/AllenCellModeling/aicsimageio
