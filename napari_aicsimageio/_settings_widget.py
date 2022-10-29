@@ -4,7 +4,8 @@ from magicgui import magic_factory
 @magic_factory(
     delimiter={"label": "Delimiter in scene labels:"},
     in_mem_size={"label": "Threshold for out-of-memory loading (GB)"},
-    frac_mem_size={"label": "Threshold for out-of-memory loading (% free memory):"},
+    frac_mem_size={"label": \
+        "Threshold for out-of-memory loading (% free memory):"},
     call_button="Set Reader Settings",
 )
 def set_settings(
