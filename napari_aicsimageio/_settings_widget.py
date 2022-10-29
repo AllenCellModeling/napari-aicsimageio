@@ -1,6 +1,3 @@
-from typing import List
-
-import napari
 from magicgui import magic_factory
 
 
@@ -10,7 +7,9 @@ from magicgui import magic_factory
     frac_mem_size={"label": "Threshold for out-of-memory loading (% free memory):"},
     call_button="Set Reader Settings",
 )
-def set_settings(delimiter: str = " :: ", in_mem_size: float = 4, frac_mem_size: int = 30) -> None:
+def set_settings(
+    delimiter: str = " :: ", in_mem_size: float = 4, frac_mem_size: int = 30
+) -> None:
     import napari_aicsimageio.core
 
     napari_aicsimageio.core.SCENE_LABEL_DELIMITER = delimiter
