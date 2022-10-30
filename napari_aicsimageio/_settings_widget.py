@@ -7,11 +7,18 @@ import napari_aicsimageio.core
 @magic_factory(
     delimiter={"label": "Delimiter in scene labels:"},
     in_mem_size={"label": "Threshold for out-of-memory loading (GB)"},
-    frac_mem_size={"label": "Threshold for out-of-memory loading (% free memory):"},
-    call_button="Set Reader Settings and Close Widget",
+    frac_mem_size={
+        "label": "Threshold for out-of-memory loading (<small>% free memory</small>):"
+    },
+    call_button="Apply Reader Settings and Close Widget",
+    info_label=dict(
+        widget_type="Label",
+        label="<h4>For each napari session, to use the settings:<br>press the Apply button!</h4>",
+    ),
     persist=True,
 )
 def set_settings(
+    info_label: str,
     napari_viewer: napari.Viewer,
     delimiter: str = napari_aicsimageio.core.SCENE_LABEL_DELIMITER,
     in_mem_size: float = napari_aicsimageio.core.IN_MEM_THRESHOLD_SIZE_BYTES / 1e9,
