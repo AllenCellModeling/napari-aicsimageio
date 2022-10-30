@@ -9,6 +9,7 @@ import napari_aicsimageio.core
     in_mem_size={"label": "Threshold for out-of-memory loading (GB)"},
     frac_mem_size={"label": "Threshold for out-of-memory loading (% free memory):"},
     call_button="Set Reader Settings and Close Widget",
+    persist=True,
 )
 def set_settings(
     napari_viewer: napari.Viewer,
