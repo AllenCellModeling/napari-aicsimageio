@@ -1,14 +1,15 @@
-import napari
 from magicgui import magic_factory
 
-import napari_aicsimageio.core
+import napari_aicsimageio.core as n_aics_core
 
 
 @magic_factory(
     delimiter={"label": "Delimiter in scene labels:"},
-    in_mem_size={"label": "Threshold for \
+    in_mem_size={
+        "label": "Threshold for \
         <br>out-of-memory loading \
-        <br>(GB)"},
+        <br>(GB)"
+    },
     frac_mem_size={
         "label": "Threshold for <br>out-of-memory loading \
             <br>(% free memory):"
@@ -24,11 +25,11 @@ import napari_aicsimageio.core
 )
 def set_settings(
     info_label: str,
-    delimiter: str = napari_aicsimageio.core.SCENE_LABEL_DELIMITER,
-    in_mem_size: float = napari_aicsimageio.core.IN_MEM_THRESHOLD_SIZE_BYTES / 1e9,
-    frac_mem_size: int = int(napari_aicsimageio.core.IN_MEM_THRESHOLD_PERCENT * 100),
+    delimiter: str = n_aics_core.SCENE_LABEL_DELIMITER,
+    in_mem_size: float = n_aics_core.IN_MEM_THRESHOLD_SIZE_BYTES / 1e9,
+    frac_mem_size: int = int(n_aics_core.IN_MEM_THRESHOLD_PERCENT * 100),
 ) -> None:
-    
-    napari_aicsimageio.core.SCENE_LABEL_DELIMITER = delimiter
-    napari_aicsimageio.core.IN_MEM_THRESHOLD_SIZE_BYTES = in_mem_size * 1e9
-    napari_aicsimageio.core.IN_MEM_THRESHOLD_PERCENT = frac_mem_size / 100
+
+    n_aics_core.SCENE_LABEL_DELIMITER = delimiter
+    n_aics_core.IN_MEM_THRESHOLD_SIZE_BYTES = in_mem_size * 1e9
+    n_aics_core.IN_MEM_THRESHOLD_PERCENT = frac_mem_size / 100
