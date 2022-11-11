@@ -4,16 +4,13 @@ from __future__ import annotations
 
 from functools import partial
 from logging import getLogger
-from magicgui import magic_factory
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from aicsimageio import AICSImage, exceptions
 from aicsimageio.dimensions import DimensionNames
-from qtpy.QtWidgets import (
-    QListWidget,
-    QListWidgetItem,
-)
+from magicgui import magic_factory
+from qtpy.QtWidgets import QListWidget, QListWidgetItem
 
 if TYPE_CHECKING:
     import xarray as xr
