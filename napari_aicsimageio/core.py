@@ -11,11 +11,8 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional
 from aicsimageio import AICSImage, exceptions
 from aicsimageio.dimensions import DimensionNames
 from qtpy.QtWidgets import (
-    QCheckBox,
-    QGroupBox,
     QListWidget,
     QListWidgetItem,
-    QVBoxLayout,
 )
 
 if TYPE_CHECKING:
@@ -122,20 +119,21 @@ def _get_meta(path: "PathLike", data: xr.DataArray, img: AICSImage) -> Dict[str,
     return meta
 
 
-@magic_factory(call_button="Apply Scene Settings",
+@magic_factory(
+    call_button="Apply Scene Settings",
     info_label=dict(
-         widget_type="Label",
-         label="<h4>For each napari session, \
+        widget_type="Label",
+        label="<h4>For each napari session, \
              <br>to use the settings: \
              <br>press the Apply button!</h4>",
-     ),
-     persist=True,
- )
+    ),
+    persist=True,
+)
 def set_scene_settings(
     info_label: str,
     clear_layers: bool = CLEAR_LAYERS_ON_SELECT,
     unpack_channels: bool = UNPACK_CHANNELS_TO_LAYERS,
-    ) -> None:
+) -> None:
     global CLEAR_LAYERS_ON_SELECT
     CLEAR_LAYERS_ON_SELECT = clear_layers
     global UNPACK_CHANNELS_TO_LAYERS
@@ -150,14 +148,14 @@ def _get_scenes(path: "PathLike", img: AICSImage, in_memory: bool) -> None:
     viewer = napari.current_viewer()
     scene_settings_widget = set_scene_settings()
     scene_settings_widget.max_height = 200
-    
+
     # Add a checkbox widget if not present
     if AICSIMAGEIO_CHOICES not in viewer.window._dock_widgets:
-        viewer.window.add_dock_widget(scene_settings_widget,
-                                      area = 'right',
-                                      name = AICSIMAGEIO_CHOICES,
-                                    )
-
+        viewer.window.add_dock_widget(
+            scene_settings_widget,
+            area="right",
+            name=AICSIMAGEIO_CHOICES,
+        )
 
     # Create the list widget and populate with the ids & scenes in the file
     list_widget = QListWidget()
