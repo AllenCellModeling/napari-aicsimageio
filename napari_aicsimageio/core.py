@@ -149,13 +149,13 @@ def _get_scenes(path: "PathLike", img: AICSImage, in_memory: bool) -> None:
     # Get napari viewer from current process
     viewer = napari.current_viewer()
     scene_settings_widget = set_scene_settings()
-
+    scene_settings_widget.max_height = 200
     
     # Add a checkbox widget if not present
     if AICSIMAGEIO_CHOICES not in viewer.window._dock_widgets:
         viewer.window.add_dock_widget(scene_settings_widget,
-                                      area = 'right', 
-                                      name = AICSIMAGEIO_CHOICES
+                                      area = 'right',
+                                      name = AICSIMAGEIO_CHOICES,
                                     )
 
 
