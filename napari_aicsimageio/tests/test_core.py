@@ -169,7 +169,7 @@ def test_for_multiscene_widget(
                 1
             )
             data = viewer.layers[0].data
-            assert isinstance(data.data, expected_dtype)
+            assert isinstance(data, expected_dtype)
             assert data.shape == expected_shape
         else:
             data, _, _ = reader(path)[0]
