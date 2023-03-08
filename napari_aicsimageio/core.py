@@ -203,7 +203,7 @@ def _get_scenes(path: "PathLike", img: AICSImage, in_memory: bool) -> None:
             meta["name"] = scene_text
             meta.pop("channel_axis", None)
 
-        viewer.add_image(data, **meta)
+        viewer.add_image(data.data, **meta)
 
     list_widget.currentItemChanged.connect(open_scene)  # type: ignore
 
