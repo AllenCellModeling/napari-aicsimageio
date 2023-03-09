@@ -28,6 +28,7 @@ logger = getLogger(__name__)
 AICSIMAGEIO_CHOICES = "AICSImageIO Scene Management"
 CLEAR_LAYERS_ON_SELECT = "Clear All Layers on New Scene Selection"
 UNPACK_CHANNELS_TO_LAYERS = "Unpack Channels as Layers"
+DONT_MERGE_MOSAICS = "Don't Merge Mosaics"
 
 SCENE_LABEL_DELIMITER = " :: "
 
@@ -40,8 +41,9 @@ IN_MEM_THRESHOLD_SIZE_BYTES = 4e9  # 4GB
 def _get_full_image_data(
     img: AICSImage,
     in_memory: bool,
+    reconstruct_mosaic: bool = True,
 ) -> xr.DataArray:
-    if DimensionNames.MosaicTile in img.reader.dims.order:
+    if DimensionNames.MosaicTile in img.reader.dims.order and reconstruct_mosaic:
         try:
             if in_memory:
                 return img.reader.mosaic_xarray_data.squeeze()
@@ -154,11 +156,16 @@ def _get_scenes(path: "PathLike", img: AICSImage, in_memory: bool) -> None:
         channel_unpack_checkbox = QCheckBox(UNPACK_CHANNELS_TO_LAYERS)
         channel_unpack_checkbox.setChecked(False)
 
+        # Create a checkbox widget to set "Mosaic Merge" or not
+        dont_merge_mosaics_checkbox = QCheckBox(DONT_MERGE_MOSAICS)
+        dont_merge_mosaics_checkbox.setChecked(False)
+
         # Add all scene management state to a single box
         scene_manager_group = QGroupBox()
         scene_manager_group_layout = QVBoxLayout()
         scene_manager_group_layout.addWidget(scene_clear_checkbox)
         scene_manager_group_layout.addWidget(channel_unpack_checkbox)
+        scene_manager_group_layout.addWidget(dont_merge_mosaics_checkbox)
         scene_manager_group.setLayout(scene_manager_group_layout)
         scene_manager_group.setFixedHeight(100)
 
@@ -189,7 +196,13 @@ def _get_scenes(path: "PathLike", img: AICSImage, in_memory: bool) -> None:
 
         # Update scene on image and get data
         img.set_scene(scene_index)
-        data = _get_full_image_data(img=img, in_memory=in_memory)
+        # check whether to mosaic merge or not
+        if _widget_is_checked(DONT_MERGE_MOSAICS):
+            data = _get_full_image_data(
+                img=img, in_memory=in_memory, reconstruct_mosaic=False
+            )
+        else:
+            data = _get_full_image_data(img=img, in_memory=in_memory)
 
         # Get metadata and add to image
         meta = _get_meta("", data, img)
