@@ -198,7 +198,9 @@ def _get_scenes(path: "PathLike", img: AICSImage, in_memory: bool) -> None:
         img.set_scene(scene_index)
         # check whether to mosaic merge or not
         if _widget_is_checked(DONT_MERGE_MOSAICS):
-            data = _get_full_image_data(img=img, in_memory=in_memory, reconstruct_mosaic=False)
+            data = _get_full_image_data(
+                img=img, in_memory=in_memory, reconstruct_mosaic=False
+            )
         else:
             data = _get_full_image_data(img=img, in_memory=in_memory)
 
