@@ -9,13 +9,8 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from aicsimageio import AICSImage, exceptions
 from aicsimageio.dimensions import DimensionNames
-from qtpy.QtWidgets import (
-    QCheckBox,
-    QGroupBox,
-    QListWidget,
-    QListWidgetItem,
-    QVBoxLayout,
-)
+from magicgui import magic_factory
+from qtpy.QtWidgets import QListWidget, QListWidgetItem
 
 if TYPE_CHECKING:
     import xarray as xr
@@ -26,8 +21,8 @@ logger = getLogger(__name__)
 ###############################################################################
 
 AICSIMAGEIO_CHOICES = "AICSImageIO Scene Management"
-CLEAR_LAYERS_ON_SELECT = "Clear All Layers on New Scene Selection"
-UNPACK_CHANNELS_TO_LAYERS = "Unpack Channels as Layers"
+CLEAR_LAYERS_ON_SELECT = False
+UNPACK_CHANNELS_TO_LAYERS = False
 
 SCENE_LABEL_DELIMITER = " :: "
 
@@ -121,20 +116,25 @@ def _get_meta(path: "PathLike", data: xr.DataArray, img: AICSImage) -> Dict[str,
     return meta
 
 
-def _widget_is_checked(widget_name: str) -> bool:
-    import napari
-
-    # Get napari viewer from current process
-    viewer = napari.current_viewer()
-
-    # Get scene management widget
-    scene_manager_choices_widget = viewer.window._dock_widgets[AICSIMAGEIO_CHOICES]
-    for child in scene_manager_choices_widget.widget().children():
-        if isinstance(child, QCheckBox):
-            if child.text() == widget_name:
-                return child.isChecked()
-
-    return False
+@magic_factory(
+    call_button="Apply Scene Settings",
+    info_label=dict(
+        widget_type="Label",
+        label="<h4>For each napari session, \
+             <br>to use the settings: \
+             <br>press the Apply button!</h4>",
+    ),
+    persist=True,
+)
+def set_scene_settings(
+    info_label: str,
+    clear_layers: bool = CLEAR_LAYERS_ON_SELECT,
+    unpack_channels: bool = UNPACK_CHANNELS_TO_LAYERS,
+) -> None:
+    global CLEAR_LAYERS_ON_SELECT
+    CLEAR_LAYERS_ON_SELECT = clear_layers
+    global UNPACK_CHANNELS_TO_LAYERS
+    UNPACK_CHANNELS_TO_LAYERS = unpack_channels
 
 
 # Function to handle multi-scene files.
@@ -143,27 +143,13 @@ def _get_scenes(path: "PathLike", img: AICSImage, in_memory: bool) -> None:
 
     # Get napari viewer from current process
     viewer = napari.current_viewer()
+    scene_settings_widget = set_scene_settings()
+    scene_settings_widget.max_height = 200
 
     # Add a checkbox widget if not present
     if AICSIMAGEIO_CHOICES not in viewer.window._dock_widgets:
-        # Create a checkbox widget to set "Clear On Scene Select" or not
-        scene_clear_checkbox = QCheckBox(CLEAR_LAYERS_ON_SELECT)
-        scene_clear_checkbox.setChecked(False)
-
-        # Create a checkbox widget to set "Unpack Channels" or not
-        channel_unpack_checkbox = QCheckBox(UNPACK_CHANNELS_TO_LAYERS)
-        channel_unpack_checkbox.setChecked(False)
-
-        # Add all scene management state to a single box
-        scene_manager_group = QGroupBox()
-        scene_manager_group_layout = QVBoxLayout()
-        scene_manager_group_layout.addWidget(scene_clear_checkbox)
-        scene_manager_group_layout.addWidget(channel_unpack_checkbox)
-        scene_manager_group.setLayout(scene_manager_group_layout)
-        scene_manager_group.setFixedHeight(100)
-
         viewer.window.add_dock_widget(
-            scene_manager_group,
+            scene_settings_widget,
             area="right",
             name=AICSIMAGEIO_CHOICES,
         )
@@ -195,11 +181,11 @@ def _get_scenes(path: "PathLike", img: AICSImage, in_memory: bool) -> None:
         meta = _get_meta("", data, img)
 
         # Optionally clear layers
-        if _widget_is_checked(CLEAR_LAYERS_ON_SELECT):
+        if CLEAR_LAYERS_ON_SELECT:
             viewer.layers.clear()
 
         # Optionally remove channel axis
-        if not _widget_is_checked(UNPACK_CHANNELS_TO_LAYERS):
+        if not UNPACK_CHANNELS_TO_LAYERS:
             meta["name"] = scene_text
             meta.pop("channel_axis", None)
 
