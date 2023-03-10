@@ -19,6 +19,7 @@ AICSImageIO bindings for napari
     -   `DV` (DeltaVision)
     -   Any formats supported by [aicsimageio](https://github.com/AllenCellModeling/aicsimageio)
     -   Any formats supported by [bioformats](https://github.com/tlambert03/bioformats_jar)
+(Note: requires `java` and `mvn` executables)
         -   `SLD` (Slidebook)
         -   `SVS` (Aperio)
         -   [Full List](https://docs.openmicroscopy.org/bio-formats/6.5.1/supported-formats.html)
@@ -35,6 +36,11 @@ _While upstream `aicsimageio` is released under BSD-3 license, this plugin is re
 
 **Stable Release:** `pip install napari-aicsimageio` or `conda install napari-aicsimageio -c conda-forge`<br>
 **Development Head:** `pip install git+https://github.com/AllenCellModeling/napari-aicsimageio.git`
+
+> **Warning**  
+> The `bioformats` reader requires `java` and `mvn` executables, which cannot be pip installed.
+> As a result, it's simplest to install it from conda-forge, ensuring both are also installed:  
+> `conda install -c conda-forge bioformats_jar`
 
 ### Reading Mode Threshold
 
