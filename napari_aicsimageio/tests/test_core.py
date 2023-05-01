@@ -38,7 +38,7 @@ CZI_FILE = "variable_scene_shape_first_scene_pyramid.czi"
     "filename, expected_shape, expected_meta",
     [
         (PNG_FILE, (800, 537, 4), {"name": Path(PNG_FILE).stem, "rgb": True}),
-        (GIF_FILE, (72, 268, 268, 4), {"name": Path(GIF_FILE).stem, "rgb": True}),
+        (GIF_FILE, (72, 268, 268, 3), {"name": Path(GIF_FILE).stem, "rgb": True}),
         (
             CZI_FILE,
             (3, 6183, 7705),
