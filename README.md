@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> We are no longer actively maintaining this repository. All active work by the Allen Institute for Cell Science is located under the **[AllenCell](https://github.com/AllenCell)** organization.
+
 # napari-aicsimageio
 
 [![License](https://img.shields.io/pypi/l/napari-aicsimageio.svg?color=green)](https://github.com/AllenCellModeling/napari-aicsimageio/raw/main/LICENSE)
