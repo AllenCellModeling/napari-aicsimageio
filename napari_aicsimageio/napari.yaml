@@ -5,6 +5,13 @@ contributions:
   - id: napari-aicsimageio.get_reader
     title: Get AICSImageIO Reader
     python_name: napari_aicsimageio.core:get_reader
+  - id: napari-aicsimageio.settings_widget
+    title: Open AICSImageIO Reader Settings
+    python_name: napari_aicsimageio._settings_widget:set_settings
+
+  widgets:
+  - command: napari-aicsimageio.settings_widget
+    display_name: AICSImageIO Reader Settings
   readers:
   - command: napari-aicsimageio.get_reader
     filename_patterns: [
