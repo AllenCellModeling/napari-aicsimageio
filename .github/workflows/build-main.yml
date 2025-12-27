@@ -61,7 +61,7 @@ jobs:
       with:
         run: python -m pytest --cov-report=xml --cov=napari_aicsimageio
     - name: Upload codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
 
   lint:
     runs-on: ubuntu-latest
